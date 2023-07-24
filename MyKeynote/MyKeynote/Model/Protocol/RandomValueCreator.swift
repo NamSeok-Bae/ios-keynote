@@ -10,7 +10,7 @@ import Foundation
 protocol RandomValueCreator {
     func createRandomIdentifier() -> String
     func createRandomInt(range: ClosedRange<Int>) -> Int
-    func createRandomColor() -> Color
+    func createRandomColor() -> SlideColor
 }
 
 extension RandomValueCreator {
@@ -35,8 +35,8 @@ extension RandomValueCreator {
         return Int.random(in: range)
     }
     
-    func createRandomColor() -> Color {
-        return Color(red: createRandomInt(range: 0...255),
+    func createRandomColor() -> SlideColor {
+        return SlideColor(red: createRandomInt(range: 0...255),
                      green: createRandomInt(range: 0...255),
                      blue: createRandomInt(range: 0...255))
     }

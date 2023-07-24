@@ -9,13 +9,17 @@ import Foundation
 
 class Slide: CustomStringConvertible {
     let identifier: String
-    var alpha: Int
+    private(set) var alpha: Int
     var description: String {
         return "(\(identifier)), Alpha: \(alpha)"
     }
     
     init(identifier: String, alpha: Int) {
         self.identifier = identifier
+        self.alpha = alpha
+    }
+    
+    func updateAlpha(alpha: Int) {
         self.alpha = alpha
     }
 }

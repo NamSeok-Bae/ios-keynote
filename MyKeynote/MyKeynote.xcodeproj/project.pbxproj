@@ -16,11 +16,19 @@
 		641290CA2A64D1ED002AB740 /* MyKeynoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290C92A64D1ED002AB740 /* MyKeynoteUITests.swift */; };
 		641290CC2A64D1ED002AB740 /* MyKeynoteUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290CB2A64D1ED002AB740 /* MyKeynoteUITestsLaunchTests.swift */; };
 		641290DD2A64D698002AB740 /* SquareSlide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290DC2A64D698002AB740 /* SquareSlide.swift */; };
-		641290DF2A64D730002AB740 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290DE2A64D730002AB740 /* Color.swift */; };
+		641290DF2A64D730002AB740 /* SlideColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290DE2A64D730002AB740 /* SlideColor.swift */; };
 		641290E32A64DAFF002AB740 /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290E22A64DAFF002AB740 /* Factory.swift */; };
 		641290E62A64DB22002AB740 /* Slide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290E52A64DB22002AB740 /* Slide.swift */; };
 		641290EB2A64E048002AB740 /* ImageSlide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290EA2A64E048002AB740 /* ImageSlide.swift */; };
 		641290F42A652C13002AB740 /* RandomValueCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290F32A652C13002AB740 /* RandomValueCreator.swift */; };
+		641290FB2A6775D0002AB740 /* ControlTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FA2A6775D0002AB740 /* ControlTitleLabel.swift */; };
+		641290FD2A677D29002AB740 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FC2A677D29002AB740 /* PaddingLabel.swift */; };
+		641290FF2A678088002AB740 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FE2A678088002AB740 /* ColorView.swift */; };
+		641291012A67A4F1002AB740 /* SquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291002A67A4F1002AB740 /* SquareView.swift */; };
+		641291032A67BA21002AB740 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291022A67BA21002AB740 /* UIColor+.swift */; };
+		641291132A68C299002AB740 /* SlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291122A68C299002AB740 /* SlideView.swift */; };
+		641291152A68D65D002AB740 /* CALayer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291142A68D65D002AB740 /* CALayer+.swift */; };
+		641291172A68DC9E002AB740 /* SlideManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291162A68DC9E002AB740 /* SlideManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,11 +62,19 @@
 		641290C92A64D1ED002AB740 /* MyKeynoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyKeynoteUITests.swift; sourceTree = "<group>"; };
 		641290CB2A64D1ED002AB740 /* MyKeynoteUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyKeynoteUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		641290DC2A64D698002AB740 /* SquareSlide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareSlide.swift; sourceTree = "<group>"; };
-		641290DE2A64D730002AB740 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		641290DE2A64D730002AB740 /* SlideColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideColor.swift; sourceTree = "<group>"; };
 		641290E22A64DAFF002AB740 /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
 		641290E52A64DB22002AB740 /* Slide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slide.swift; sourceTree = "<group>"; };
 		641290EA2A64E048002AB740 /* ImageSlide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSlide.swift; sourceTree = "<group>"; };
 		641290F32A652C13002AB740 /* RandomValueCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomValueCreator.swift; sourceTree = "<group>"; };
+		641290FA2A6775D0002AB740 /* ControlTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlTitleLabel.swift; sourceTree = "<group>"; };
+		641290FC2A677D29002AB740 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		641290FE2A678088002AB740 /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
+		641291002A67A4F1002AB740 /* SquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareView.swift; sourceTree = "<group>"; };
+		641291022A67BA21002AB740 /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
+		641291122A68C299002AB740 /* SlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideView.swift; sourceTree = "<group>"; };
+		641291142A68D65D002AB740 /* CALayer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+.swift"; sourceTree = "<group>"; };
+		641291162A68DC9E002AB740 /* SlideManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				641290D82A64D5C7002AB740 /* App */,
+				641290F72A67759D002AB740 /* View */,
 				641290D92A64D5CA002AB740 /* Model */,
 				641290DA2A64D5D4002AB740 /* ViewController */,
 				641290DB2A64D5DE002AB740 /* Util */,
@@ -150,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				641290E42A64DB1A002AB740 /* Protocol */,
+				6412911B2A6D77CB002AB740 /* Struct */,
 				641290E02A64D948002AB740 /* Class */,
 			);
 			path = Model;
@@ -175,7 +193,7 @@
 		641290E02A64D948002AB740 /* Class */ = {
 			isa = PBXGroup;
 			children = (
-				641290DE2A64D730002AB740 /* Color.swift */,
+				641290DE2A64D730002AB740 /* SlideColor.swift */,
 				641290E52A64DB22002AB740 /* Slide.swift */,
 				641290DC2A64D698002AB740 /* SquareSlide.swift */,
 				641290EA2A64E048002AB740 /* ImageSlide.swift */,
@@ -202,8 +220,30 @@
 		641290EC2A64E0D6002AB740 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				641291022A67BA21002AB740 /* UIColor+.swift */,
+				641291142A68D65D002AB740 /* CALayer+.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		641290F72A67759D002AB740 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				641290FA2A6775D0002AB740 /* ControlTitleLabel.swift */,
+				641290FC2A677D29002AB740 /* PaddingLabel.swift */,
+				641290FE2A678088002AB740 /* ColorView.swift */,
+				641291122A68C299002AB740 /* SlideView.swift */,
+				641291002A67A4F1002AB740 /* SquareView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		6412911B2A6D77CB002AB740 /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				641291162A68DC9E002AB740 /* SlideManager.swift */,
+			);
+			path = Struct;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,15 +376,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				641290FF2A678088002AB740 /* ColorView.swift in Sources */,
 				641290DD2A64D698002AB740 /* SquareSlide.swift in Sources */,
+				641291012A67A4F1002AB740 /* SquareView.swift in Sources */,
 				641290F42A652C13002AB740 /* RandomValueCreator.swift in Sources */,
 				641290AD2A64D1EC002AB740 /* ViewController.swift in Sources */,
+				641291152A68D65D002AB740 /* CALayer+.swift in Sources */,
+				641290FB2A6775D0002AB740 /* ControlTitleLabel.swift in Sources */,
 				641290E32A64DAFF002AB740 /* Factory.swift in Sources */,
 				641290A92A64D1EC002AB740 /* AppDelegate.swift in Sources */,
-				641290DF2A64D730002AB740 /* Color.swift in Sources */,
+				641291172A68DC9E002AB740 /* SlideManager.swift in Sources */,
+				641290DF2A64D730002AB740 /* SlideColor.swift in Sources */,
+				641291132A68C299002AB740 /* SlideView.swift in Sources */,
 				641290AB2A64D1EC002AB740 /* SceneDelegate.swift in Sources */,
 				641290EB2A64E048002AB740 /* ImageSlide.swift in Sources */,
 				641290E62A64DB22002AB740 /* Slide.swift in Sources */,
+				641290FD2A677D29002AB740 /* PaddingLabel.swift in Sources */,
+				641291032A67BA21002AB740 /* UIColor+.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

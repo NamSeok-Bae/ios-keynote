@@ -9,14 +9,18 @@ import Foundation
 
 class SquareSlide: Slide {
     let sideLength: Int
-    var backgroundColor: Color
+    private(set) var backgroundColor: SlideColor
     override var description: String {
         return "(\(identifier)), Side: \(sideLength), " + backgroundColor.description + ", Alpah: \(alpha)"
     }
     
-    init(identifier: String, alpha: Int, sideLength: Int, backgroundColor: Color) {
+    init(identifier: String, alpha: Int, sideLength: Int, backgroundColor: SlideColor) {
         self.sideLength = sideLength
         self.backgroundColor = backgroundColor
         super.init(identifier: identifier, alpha: alpha)
+    }
+    
+    func updateBackgroundColor(color: SlideColor) {
+        self.backgroundColor = color
     }
 }

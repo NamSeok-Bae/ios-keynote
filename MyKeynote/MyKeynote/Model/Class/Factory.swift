@@ -8,11 +8,14 @@
 import Foundation
 
 protocol SlideCreator: RandomValueCreator {
-    func createSlide() -> Slide
+    associatedtype Value
+    func createSlide() -> Value
 }
 
 class SquareSlideFactory: SlideCreator {
-    func createSlide() -> Slide {
+    typealias Value = SquareSlide
+    
+    func createSlide() -> Value {
         return SquareSlide(identifier: createRandomIdentifier(),
                       alpha: createRandomInt(range: 0...10),
                       sideLength: createRandomInt(range: 100...500),
@@ -21,14 +24,16 @@ class SquareSlideFactory: SlideCreator {
 }
 
 class ImageSlideFactory: SlideCreator {
-    func createSlide() -> Slide {
+    typealias Value = ImageSlide
+    
+    func createSlide() -> Value {
          return ImageSlide(identifier: createRandomIdentifier(),
                                alpha: createRandomInt(range: 0...10))
     }
 }
 
 class SlideFactory {
-    func createSlide(creator: SlideCreator) -> Slide {
+    func createSlide<T: SlideCreator>(creator: T) -> T.Value {
         return creator.createSlide()
     }
 }

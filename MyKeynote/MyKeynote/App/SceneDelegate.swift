@@ -17,6 +17,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
+        
+        configureStatusBar()
+    }
+    
+    func configureStatusBar() {
+        let statusBarManager = window?.windowScene?.statusBarManager
+        let statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? .zero)
+        statusBarView.backgroundColor = .gray
+        
+        window?.addSubview(statusBarView)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

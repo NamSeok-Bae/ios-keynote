@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Color: CustomStringConvertible {
+class SlideColor: CustomStringConvertible {
     var red: Int
     var green: Int
     var blue: Int
@@ -19,5 +19,13 @@ class Color: CustomStringConvertible {
         self.red = red
         self.green = green
         self.blue = blue
+    }
+    
+    func convertHexString() -> String {
+        let redHex = String(format: "%02X", red)
+        let greenHex = String(format: "%02X", green)
+        let blueHex = String(format: "%02X", blue)
+        
+        return "0x\(redHex)\(greenHex)\(blueHex)"
     }
 }
