@@ -8,18 +8,18 @@
 import Foundation
 
 class Slide: CustomStringConvertible {
-    let identifier: String
-    private(set) var alpha: Int
+    let identifier: SlideIdentifier
+    private(set) var alpha: SlideAlpha
     var description: String {
-        return "(\(identifier)), Alpha: \(alpha)"
+        return "(\(identifier.value)), Alpha: \(alpha.value)"
     }
     
     init(identifier: String, alpha: Int) {
-        self.identifier = identifier
-        self.alpha = alpha
+        self.identifier = SlideIdentifier(identifier: identifier)
+        self.alpha = SlideAlpha(alpha: alpha)
     }
     
     func updateAlpha(alpha: Int) {
-        self.alpha = alpha
+        self.alpha.updateAlpha(alpha)
     }
 }

@@ -61,7 +61,7 @@ class ViewController: UIViewController {
     }()
     
     // MARK: - Properties
-    private var slideManager: SlideManager!
+    private var slideManager: DefaultSlideManager!
     private weak var currentView: SlideView<SquareSlide>!
     private var currentBackgroundColor: SlideColor!
     private let tempSlideIndex = 0
@@ -73,12 +73,12 @@ class ViewController: UIViewController {
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        slideManager = SlideManager()
+        slideManager = DefaultSlideManager()
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     required init?(coder: NSCoder) {
-        slideManager = SlideManager()
+        slideManager = DefaultSlideManager()
         super.init(coder: coder)
     }
     
@@ -88,8 +88,11 @@ class ViewController: UIViewController {
         setupViews()
         configureUI()
         
+        setupNotificationCenter()
         setupContainerView()
         setupTapGesture()
+        
+        slideManager.createSquareSlide()
     }
     
     // MARK: - Functions
@@ -110,41 +113,34 @@ class ViewController: UIViewController {
     
     private func setupContainerView() {
         view.addSubview(containerView)
-        
         configureContainerView()
-        
-        slideManager.createSquareSlide()
-        let square: SquareSlide? = slideManager[tempSlideIndex]
-        
-        guard let square else { return }
-        
-        setupInspectOfBackgroundColor(color: square.backgroundColor)
-        setupInspectOfAlpha(alpha: square.alpha)
-        let squareView = SquareView(data: square)
-        squareView.delegate = self
-        containerView.addSubview(squareView)
-        currentView = squareView
-        
-        NSLayoutConstraint.activate([
-            squareView.widthAnchor.constraint(
-                equalToConstant: CGFloat(square.sideLength)
-            ),
-            squareView.heightAnchor.constraint(
-                equalToConstant: CGFloat(square.sideLength)
-            ),
-            squareView.centerXAnchor.constraint(
-                equalTo: containerView.centerXAnchor
-            ),
-            squareView.centerYAnchor.constraint(
-                equalTo: containerView.centerYAnchor
-            )
-        ])
     }
     
     private func setupTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewDidTapped))
         tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
+    }
+    
+    private func setupNotificationCenter() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didCreateSlideView(_:)),
+            name: NSNotification.Name.slideViewCreate,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didUpdateSlideViewAlpha(_:)),
+            name: NSNotification.Name.slideViewAlphaUpdate,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didUpdateSlideViewBackgroundColor(_:)),
+            name: NSNotification.Name.slideViewBackgroundColorUpdate,
+            object: nil
+        )
     }
     
     private func configureUI() {
@@ -228,8 +224,10 @@ class ViewController: UIViewController {
     
     private func configureBackgroundControlButton() {
         NSLayoutConstraint.activate([
-            backgroundControlButton.topAnchor.constraint(equalTo: backgroundControlTitleLabel.bottomAnchor,
-                                                             constant: 10),
+            backgroundControlButton.topAnchor.constraint(
+                equalTo: backgroundControlTitleLabel.bottomAnchor,
+                constant: 10
+            ),
             backgroundControlButton.leadingAnchor.constraint(
                 equalTo: backgroundControlTitleLabel.leadingAnchor
             ),
@@ -294,10 +292,14 @@ class ViewController: UIViewController {
     private func setupInspectOfBackgroundColor(color: SlideColor) {
         let uiColor = UIColor(color: color)
         currentBackgroundColor = color
-        backgroundControlButton.setTitle(color.convertHexString(),
-                                         for: .normal)
-        backgroundControlButton.setTitleColor(uiColor.complementaryColor,
-                                              for: .normal)
+        backgroundControlButton.setTitle(
+            color.convertHexString(),
+            for: .normal
+        )
+        backgroundControlButton.setTitleColor(
+            uiColorToComplementaryColor(uiColor),
+            for: .normal
+        )
         backgroundControlButton.layer.backgroundColor = uiColor.cgColor
     }
     
@@ -312,13 +314,74 @@ class ViewController: UIViewController {
     }
     
     @objc private func changeAlphaStepperValue(sender: UIStepper) {
-        let alpha = alphaStepper.value
-        let alpha_Int = Int(alpha)
-        alphaNumberLabel.text = "\(alpha_Int)"
+        let alpha = Int(alphaStepper.value)
         slideManager.updateSlideAlpha(slideIndex: tempSlideIndex,
-                                      alpha: alpha_Int)
-        currentView.layer.setBackgroundColorWithAlpha(color: currentBackgroundColor,
-                                                      alpha: alpha / 10)
+                                      alpha: alpha)
+    }
+    
+    @objc func didCreateSlideView(_ notification: Notification) {
+        if let square = notification.object as? SquareSlide {
+            setupInspectOfBackgroundColor(color: square.backgroundColor)
+            setupInspectOfAlpha(alpha: square.alpha.value)
+            
+            let squareView = SquareView(data: square)
+            squareView.delegate = self
+            containerView.addSubview(squareView)
+            currentView = squareView
+            
+            NSLayoutConstraint.activate([
+                squareView.widthAnchor.constraint(
+                    equalToConstant: CGFloat(square.sideLength)
+                ),
+                squareView.heightAnchor.constraint(
+                    equalToConstant: CGFloat(square.sideLength)
+                ),
+                squareView.centerXAnchor.constraint(
+                    equalTo: containerView.centerXAnchor
+                ),
+                squareView.centerYAnchor.constraint(
+                    equalTo: containerView.centerYAnchor
+                )
+            ])
+        } else {
+            // ImageSlide
+        }
+    }
+    
+    @objc func didUpdateSlideViewAlpha(_ notification: Notification) {
+        if let alpha = notification.object as? Int {
+            setupInspectOfAlpha(alpha: alpha)
+            currentView.layer.setBackgroundColorWithAlpha(
+                color: currentBackgroundColor,
+                alpha: CGFloat(alpha) / 10
+            )
+        }
+    }
+    
+    @objc func didUpdateSlideViewBackgroundColor(_ notification: Notification) {
+        if let color = notification.object as? SlideColor {
+            setupInspectOfBackgroundColor(color: color)
+            currentView.layer.setBackgroundColorWithAlpha(color: color)
+        }
+    }
+    
+    // MARK: - UIColor Functions
+    private func uiColorToSlideColor(_ uiColor: UIColor) -> SlideColor {
+        let ciColor = uiColor.ciColor
+        let red: Int = Int(ciColor.red * 255)
+        let green: Int = Int(ciColor.green * 255)
+        let blue: Int = Int(ciColor.blue * 255)
+        
+        return SlideColor(red: red, green: green, blue: blue)
+    }
+    
+    private func uiColorToComplementaryColor(_ uiColor: UIColor) -> UIColor {
+        let ciColor = uiColor.ciColor
+        let red: CGFloat = 1.0 - ciColor.red
+        let green: CGFloat = 1.0 - ciColor.green
+        let blue: CGFloat = 1.0 - ciColor.blue
+        
+        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
 
@@ -334,17 +397,16 @@ extension ViewController: UIColorPickerViewControllerDelegate {
     
     // colorPickerViewController 선택 종료시 호출
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        let slideColor = viewController.selectedColor.slideColor
-        let alpha = viewController.selectedColor.alpha
-        let alpha_Int = Int(alpha * 10)
-        setupInspectOfBackgroundColor(color: slideColor)
-        setupInspectOfAlpha(alpha: alpha_Int)
-        slideManager.updateSquareSlideBackgroundColor(slideIndex: tempSlideIndex,
-                                                      color: slideColor)
-        slideManager.updateSlideAlpha(slideIndex: tempSlideIndex,
-                                      alpha: alpha_Int)
-        currentView.layer.setBackgroundColorWithAlpha(color: slideColor,
-                                                      alpha: alpha)
+        let slideColor = uiColorToSlideColor(viewController.selectedColor)
+        let alpha = Int(viewController.selectedColor.alpha * 10)
+        slideManager.updateSquareSlideBackgroundColor(
+            slideIndex: tempSlideIndex,
+            color: slideColor
+        )
+        slideManager.updateSlideAlpha(
+            slideIndex: tempSlideIndex,
+            alpha: alpha
+        )
     }
 }
 

@@ -7,7 +7,11 @@
 
 import Foundation
 
-class SquareSlide: Slide {
+class SquareSlide: Slide, Equatable {
+    static func == (lhs: SquareSlide, rhs: SquareSlide) -> Bool {
+        return lhs.description == rhs.description
+    }
+    
     let sideLength: Int
     private(set) var backgroundColor: SlideColor
     override var description: String {

@@ -7,6 +7,8 @@
 
 import Foundation
 
-class ImageSlide: Slide {
-    
+class ImageSlide: Slide, Equatable {
+    static func == (lhs: ImageSlide, rhs: ImageSlide) -> Bool {
+        return lhs.description == rhs.description
+    }
 }

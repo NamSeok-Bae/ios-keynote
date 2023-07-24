@@ -7,7 +7,11 @@
 
 import Foundation
 
-class SlideColor: CustomStringConvertible {
+class SlideColor: CustomStringConvertible, Equatable {
+    static func == (lhs: SlideColor, rhs: SlideColor) -> Bool {
+        return lhs.description == rhs.description
+    }
+    
     var red: Int
     var green: Int
     var blue: Int
@@ -16,9 +20,9 @@ class SlideColor: CustomStringConvertible {
     }
     
     init(red: Int, green: Int, blue: Int) {
-        self.red = red
-        self.green = green
-        self.blue = blue
+        self.red = red > 255 ? 255 : red < 0 ? 0 : red
+        self.green = green > 255 ? 255 : green < 0 ? 0 : green
+        self.blue = blue > 255 ? 255 : blue < 0 ? 0 : blue
     }
     
     func convertHexString() -> String {

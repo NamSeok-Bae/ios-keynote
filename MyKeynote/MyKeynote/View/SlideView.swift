@@ -61,7 +61,7 @@ class SlideView<T: Slide>: UIView {
     
     func bindData(data: T) {
         self.data = data
-        setupProperties(identifier: data.identifier,
-                        alpha: data.alpha)
+        setupProperties(identifier: data.identifier.value,
+                        alpha: data.alpha.value)
     }
 }

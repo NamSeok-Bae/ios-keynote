@@ -1,17 +1,22 @@
 # ios-keynote 3~4주차 프로젝트
 
-## 아이패드 앱 프로젝트 (완료시간 : 17:20)
+## 관찰자(Observer) 패턴 (완료일 7/24 16:30)
 
 ### 주요 작업 내용
 
-- Struct를 사용하지않고 모두 Class로 선언하여 구현하였습니다.
-- Factory Pattern을 적용하였습니다. 아래와 같은 구조를 가집니다.
-    - SlideFactory
-        - ImageSlideFactory
-        - SquareSlideFactory
-- ViewController에서 SlideFactory를 생성하여 SlideType Enum을 통해 ImageSlide 또는 SquareSlide 객체를 생성해줍니다.
-- OS_Log 함수를 사용할 때 Message 내부에 형식 지정자(%d, %s)를 통해 number와 description을 담아주었습니다.
+- 3-2 과제 피드백 적용
+    - Extension Fileprivate 적용
+    - identifier, alpha 를 Custom Type으로 변경
+    - SlideManager Protocol 생성
+    - SlideFactory Protocol 생성
+- SlideManager Test 함수 작성
+    - MockFactory와 MockSlideManager를 통해 테스트 진행
+- NotificationCenter Observer 적용
+    - SlideManager에서 Create, alpha & backgroundColor Update가 일어날떄마다 Notificiation을 Post해주고 ViewController에서 해당 이벤트를 받아 뷰를 업데이트 해주는 방식으로 처리
 
-## 작업 결과
+## Notification 구조
+<img width="100%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/4ca46d66-e585-4297-80f9-386e2d8416b6">
 
-<img width="80%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/83c9d693-8b46-4556-b0f2-ac9b7ae88893">
+## 테스트 함수 전체보기
+<img width="50%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/d64ba58d-afcc-4b39-b33c-a1e560928117">
+
