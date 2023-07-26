@@ -31,12 +31,8 @@ final class SlideListCell: UITableViewCell {
     }()
     
     // MARK: - Properties
-    enum UIImageSystemNameType: String {
-        case rectangle = "rectangle.center.inset.filled"
-        case image = "photo"
-    }
-    
-    static let identifier = "SlideListCell"
+    static let reuseIdentifier = "SlideListCell"
+    private(set) var identifier: String!
     var isDisplayed: Bool = false {
         didSet {
             self.layer.borderWidth = isDisplayed ? 3 : 0
@@ -68,13 +64,9 @@ final class SlideListCell: UITableViewCell {
     
     // MARK: - Functions
     func bind(slide: Slide, index: Int) {
-        if slide is SquareSlide {
-            preview.image = UIImage(systemName: UIImageSystemNameType.rectangle.rawValue)?.withTintColor(.gray,
-                                                                                                renderingMode: .alwaysOriginal)
-        } else {
-            preview.image = UIImage(systemName: UIImageSystemNameType.image.rawValue)?.withTintColor(.gray,
-                                                                        renderingMode: .alwaysOriginal)
-        }
+        identifier = slide.identifier.value
+        preview.image = UIImage(slide: slide).withTintColor(.gray,
+                                                            renderingMode: .alwaysOriginal)
         bind(index: index)
     }
     
