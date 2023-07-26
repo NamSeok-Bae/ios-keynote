@@ -71,18 +71,6 @@ class ViewController: UIViewController {
         }
     }
     
-    private func removeAllConstraint(view: UIView) {
-        view.constraints.forEach {
-            $0.isActive = false
-        }
-    }
-    
-    private func removeAllSubViews(view: UIView) {
-        view.subviews.forEach {
-            $0.removeFromSuperview()
-        }
-    }
-    
     private func setupTapGesture() -> UIGestureRecognizer {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapped))
         tapGesture.delegate = self
@@ -169,11 +157,24 @@ class ViewController: UIViewController {
         inspertorView.bindAlphaStepperAndLabel(alpha: alpha)
     }
     
+    private func removeAllConstraint(view: UIView) {
+        view.constraints.forEach {
+            $0.isActive = false
+        }
+    }
+    
+    private func removeAllSubViews(view: UIView) {
+        view.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+    }
+    
     private func initailizeViews() {
         removeAllSubViews(view: containerBackgroundView)
         removeAllSubViews(view: containerView)
         setupInspectDefault()
     }
+    
     
     // MARK: - Configure Functions
     
@@ -287,7 +288,7 @@ class ViewController: UIViewController {
         ])
     }
     
-    // MARK: - Objc Functions
+    // MARK: - Objc Action Functions
     @objc private func didTapped(sender: UITapGestureRecognizer) {
         currentView.isTapped = currentView.isTapped ? false : true
     }
