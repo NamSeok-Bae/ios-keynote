@@ -214,6 +214,29 @@ class ViewController: UIViewController {
         ])
     }
     
+    private func configureImageSlideView(size: CGSize, imageView: ImageSlideView) {
+        imageView.constraints.forEach {
+            $0.isActive = false
+        }
+        
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(
+                equalToConstant: size.width
+            ),
+            imageView.heightAnchor.constraint(
+                equalToConstant: size.height
+            ),
+            imageView.centerXAnchor.constraint(
+                equalTo: containerView.centerXAnchor
+            ),
+            imageView.centerYAnchor.constraint(
+                equalTo: containerView.centerYAnchor
+            )
+        ])
+        
+        imageView.configureImageButton()
+    }
+    
     private func configureContainerBackgroundView() {
         NSLayoutConstraint.activate([
             containerBackgroundView.widthAnchor.constraint(
@@ -325,29 +348,6 @@ class ViewController: UIViewController {
            let imageView = currentView as? ImageSlideView {
             configureImageSlideView(size: size, imageView: imageView)
         }
-    }
-    
-    func configureImageSlideView(size: CGSize, imageView: ImageSlideView) {
-        imageView.constraints.forEach {
-            $0.isActive = false
-        }
-        
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(
-                equalToConstant: size.width
-            ),
-            imageView.heightAnchor.constraint(
-                equalToConstant: size.height
-            ),
-            imageView.centerXAnchor.constraint(
-                equalTo: containerView.centerXAnchor
-            ),
-            imageView.centerYAnchor.constraint(
-                equalTo: containerView.centerYAnchor
-            )
-        ])
-        
-        imageView.configureImageButton()
     }
     
     // MARK: - UIColor Functions
