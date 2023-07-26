@@ -71,6 +71,12 @@ class ViewController: UIViewController {
         }
     }
     
+    private func removeAllConstraint(view: UIView) {
+        view.constraints.forEach {
+            $0.isActive = false
+        }
+    }
+    
     private func removeAllSubViews(view: UIView) {
         view.subviews.forEach {
             $0.removeFromSuperview()
@@ -220,10 +226,6 @@ class ViewController: UIViewController {
     }
     
     private func configureImageSlideView(size: CGSize, imageView: ImageSlideView) {
-        imageView.constraints.forEach {
-            $0.isActive = false
-        }
-        
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(
                 equalToConstant: size.width
@@ -238,8 +240,6 @@ class ViewController: UIViewController {
                 equalTo: containerView.centerYAnchor
             )
         ])
-        
-        imageView.configureImageButton()
     }
     
     private func configureContainerBackgroundView() {
@@ -349,6 +349,7 @@ class ViewController: UIViewController {
     @objc func didUpdateSlideSize(_ notification: Notification) {
         if let size = notification.userInfo?["SlideSize"] as? CGSize,
            let imageView = currentView as? ImageSlideView {
+            removeAllConstraint(view: imageView)
             configureImageSlideView(size: size, imageView: imageView)
         }
     }
