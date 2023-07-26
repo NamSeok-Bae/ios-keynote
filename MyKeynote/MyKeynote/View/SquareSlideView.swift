@@ -31,6 +31,10 @@ class SquareSlideView: SlideView {
         self.alpha = 1
     }
     
+    override func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
+        self.layer.setBackgroundColorWithAlpha(color: color, alpha: alpha)
+    }
+    
     func bindData(data: SquareSlide) {
         super.bindData(data: data)
         configureUI(color: data.backgroundColor)

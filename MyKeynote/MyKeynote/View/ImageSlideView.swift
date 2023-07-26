@@ -55,6 +55,10 @@ class ImageSlideView: SlideView {
         ])
     }
     
+    override func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
+        self.imageButton.imageView?.alpha = alpha.cgValue
+    }
+    
     @objc private func touchUpImageButton(sender: UIButton) {
         delegate?.detectTappedSlide(isTapped: isTapped)
         isTapped = !isTapped

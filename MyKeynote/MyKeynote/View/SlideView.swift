@@ -55,6 +55,10 @@ class SlideView: UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
+        
+    }
+    
     func setupProperties(identifier: SlideIdentifier, alpha: SlideAlpha) {
         self.identifier = identifier
         self.alpha = CGFloat(alpha.value) / 10
