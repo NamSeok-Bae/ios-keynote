@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SquareView: SlideView<SquareSlide> {
+class SquareSlideView: SlideView {
     // MARK: - Properties
     
     // MARK: - LifeCycles
@@ -31,7 +31,7 @@ class SquareView: SlideView<SquareSlide> {
         self.alpha = 1
     }
     
-    override func bindData(data: SquareSlide) {
+    func bindData(data: SquareSlide) {
         super.bindData(data: data)
         configureUI(color: data.backgroundColor)
     }
