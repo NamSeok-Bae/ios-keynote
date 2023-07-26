@@ -10,13 +10,26 @@ import Foundation
 protocol SlideManager {
     func createSquareSlide()
     func createImageSlide()
-    func updateSlideAlpha(slideIndex: Int, alpha: SlideAlpha)
-    func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor)
+    func createRamdomSlide()
+    func updateCurrentUseIndex(index: Int)
+    func updateSlideAlpha(alpha: SlideAlpha)
+    func updateImageSlideImageString(data: Data?)
+    func updateImageSlideSize(size: CGSize)
+    func moveSlide(sourceIndex: Int, destinationIndex: Int)
+    func searchSlideByIdentifier(identifier: String)
 }
 
 class DefaultSlideManager: SlideManager {
+    enum MoveType {
+        case front
+        case back
+        case forward
+        case backward
+    }
+    
     private(set) var slideArray: [Slide]
     private let factory: SlideFactory
+    private(set) var currentUseIndex: Int?
     var slideCount: Int {
         get {
             slideArray.count
@@ -26,9 +39,10 @@ class DefaultSlideManager: SlideManager {
         return index >= 0 && index < slideArray.count ? slideArray[index] : nil
     }
     
-    init() {
+    init(factory: SlideFactory) {
+        self.factory = factory
         slideArray = []
-        factory = DefaultSlideFactory()
+        currentUseIndex = nil
     }
     
     func createSquareSlide() {
@@ -41,20 +55,61 @@ class DefaultSlideManager: SlideManager {
         slideArray.append(newSlide)
     }
     
-    func updateSlideAlpha(slideIndex: Int, alpha: SlideAlpha) {
-        slideArray[slideIndex].updateAlpha(alpha: alpha)
-        NotificationCenter.default.post(
-            name: NSNotification.Name.slideViewAlphaUpdate,
-            object: alpha
-        )
+    func createRamdomSlide() {
+        if Int.random(in: 1...10) % 2 == 1 {
+            createSquareSlide()
+        } else {
+            createImageSlide()
+        }
     }
     
-    func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor) {
-        if let slide = slideArray[slideIndex] as? SquareSlide {
+    func updateCurrentUseIndex(index: Int) {
+        self.currentUseIndex = index
+    }
+    
+    func updateSlideAlpha(alpha: SlideAlpha) {
+        if let index = currentUseIndex {
+            slideArray[index].updateAlpha(alpha: alpha)
+            NotificationCenter.default.post(
+                name: NSNotification.Name.slideViewAlphaUpdate,
+                object: nil,
+                userInfo: ["SlideAlpha": alpha]
+            )
+        }
+    }
+    
+    func updateSquareSlideBackgroundColor(color: SlideColor) {
+        if let index = currentUseIndex,
+           let slide = slideArray[index] as? SquareSlide {
             slide.updateBackgroundColor(color: color)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewBackgroundColorUpdate,
-                object: color
+                object: nil,
+                userInfo: ["SlideColor": color]
+            )
+        }
+    }
+    
+    func updateImageSlideImageString(data: Data?) {
+        if let index = currentUseIndex,
+           let slide = slideArray[index] as? ImageSlide {
+            slide.updateImageString(data: data)
+            NotificationCenter.default.post(
+                name: NSNotification.Name.slideViewImageStringUpdate,
+                object: nil,
+                userInfo: ["SlideImageString": slide.imageString]
+            )
+        }
+    }
+    
+    func updateImageSlideSize(size: CGSize) {
+        if let index = currentUseIndex,
+           let slide = slideArray[index] as? ImageSlide {
+            slide.updateSize(size: size)
+            NotificationCenter.default.post(
+                name: NSNotification.Name.slideViewSizeUpdate,
+                object: nil,
+                userInfo: ["SlideSize": slide.size]
             )
         }
     }
@@ -62,8 +117,38 @@ class DefaultSlideManager: SlideManager {
     func moveSlide(sourceIndex: Int, destinationIndex: Int) {
         if sourceIndex == destinationIndex { return }
         
-        let slide = slideArray[sourceIndex]
-        slideArray.remove(at: sourceIndex)
+        let slide = slideArray.remove(at: sourceIndex)
         slideArray.insert(slide, at: destinationIndex)
+        NotificationCenter.default.post(
+            name: Notification.Name.slideViewMove,
+            object: nil,
+            userInfo: ["isSlideMoved": true]
+        )
+    }
+    
+    func moveSlide(moveType: MoveType) {
+        guard let currentUseIndex else { return }
+        let forwardIndex = currentUseIndex == 0 ? 0 : currentUseIndex - 1
+        let backwardIndex = currentUseIndex == slideCount - 1 ? slideCount - 1 : currentUseIndex + 1
+        
+        switch moveType {
+        case .front:
+            moveSlide(sourceIndex: currentUseIndex, destinationIndex: 0)
+        case .back:
+            moveSlide(sourceIndex: currentUseIndex, destinationIndex: slideCount - 1)
+        case .forward:
+            moveSlide(sourceIndex: currentUseIndex, destinationIndex: forwardIndex)
+        case .backward:
+            moveSlide(sourceIndex: currentUseIndex, destinationIndex: backwardIndex)
+        }
+    }
+    
+    func searchSlideByIdentifier(identifier: String) {
+        for (idx, slide) in slideArray.enumerated() {
+            if slide.identifier.value == identifier {
+                currentUseIndex = idx
+                break
+            }
+        }
     }
 }
