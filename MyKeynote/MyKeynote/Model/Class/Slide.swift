@@ -14,6 +14,11 @@ class Slide: CustomStringConvertible {
         return "(\(identifier.value)), Alpha: \(alpha.value)"
     }
     
+    init(identifier: String) {
+        self.identifier = SlideIdentifier(identifier: identifier)
+        self.alpha = SlideAlpha(alpha: 10)
+    }
+    
     init(identifier: String, alpha: Int) {
         self.identifier = SlideIdentifier(identifier: identifier)
         self.alpha = SlideAlpha(alpha: alpha)
