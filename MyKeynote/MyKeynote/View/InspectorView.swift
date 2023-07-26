@@ -188,9 +188,9 @@ final class InspectorView: UIView {
         alphaStepper.isEnabled = false
     }
     
-    func bindTapped(isTapped: Bool) {
+    func bindTapped(isTapped: Bool, curretViewType: SlideView.Type) {
+        backgroundControlButton.isEnabled = curretViewType == SquareSlideView.self ? isTapped : false
         alphaNumberLabel.isEnabled = isTapped
-        backgroundControlButton.isEnabled = isTapped
         alphaStepper.isEnabled = isTapped
     }
     
