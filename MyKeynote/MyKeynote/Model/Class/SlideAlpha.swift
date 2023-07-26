@@ -9,16 +9,22 @@ import Foundation
 
 class SlideAlpha {
     private(set) var value: Int
+    var cgValue: CGFloat {
+        get {
+            CGFloat(value) / 10
+        }
+    }
     
     convenience init() {
         self.init(alpha: 0)
     }
     
     init(alpha: Int) {
-        self.value = alpha > 10 ? 10 : alpha < 0 ? 0 : alpha
+        self.value = alpha > 10 ? 10 : alpha < 1 ? 1 : alpha
     }
     
-    func updateAlpha(_ alpha: Int) {
-        self.value = alpha > 10 ? 10 : alpha < 0 ? 0 : alpha
+    init(alpha: CGFloat) {
+        let alpha = Int(alpha * 10)
+        self.value = alpha > 10 ? 10 : alpha < 1 ? 1 : alpha
     }
 }

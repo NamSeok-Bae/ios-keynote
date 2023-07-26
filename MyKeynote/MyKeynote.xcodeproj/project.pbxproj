@@ -44,6 +44,8 @@
 		6412913D2A6E3697002AB740 /* MockFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6412913C2A6E3697002AB740 /* MockFactory.swift */; };
 		6412913F2A6E3B15002AB740 /* MockSlideManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6412913E2A6E3B15002AB740 /* MockSlideManager.swift */; };
 		641291402A6E3E8E002AB740 /* NotificiationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6412911C2A6E0919002AB740 /* NotificiationName+.swift */; };
+		647C01DB2A6E6E7A000D5542 /* SlideListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */; };
+		647C01E12A70165A000D5542 /* InspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01E02A70165A000D5542 /* InspectorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,8 @@
 		6412912D2A6E2075002AB740 /* SlideAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideAlpha.swift; sourceTree = "<group>"; };
 		6412913C2A6E3697002AB740 /* MockFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFactory.swift; sourceTree = "<group>"; };
 		6412913E2A6E3B15002AB740 /* MockSlideManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSlideManager.swift; sourceTree = "<group>"; };
+		647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideListCell.swift; sourceTree = "<group>"; };
+		647C01E02A70165A000D5542 /* InspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +262,8 @@
 				641290FE2A678088002AB740 /* ColorView.swift */,
 				641291122A68C299002AB740 /* SlideView.swift */,
 				641291002A67A4F1002AB740 /* SquareView.swift */,
+				647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */,
+				647C01E02A70165A000D5542 /* InspectorView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -425,7 +431,9 @@
 				641290AD2A64D1EC002AB740 /* ViewController.swift in Sources */,
 				641291152A68D65D002AB740 /* CALayer+.swift in Sources */,
 				641290FB2A6775D0002AB740 /* ControlTitleLabel.swift in Sources */,
+				647C01DB2A6E6E7A000D5542 /* SlideListCell.swift in Sources */,
 				641290E32A64DAFF002AB740 /* Factory.swift in Sources */,
+				647C01E12A70165A000D5542 /* InspectorView.swift in Sources */,
 				641290A92A64D1EC002AB740 /* AppDelegate.swift in Sources */,
 				641291172A68DC9E002AB740 /* DefaultSlideManager.swift in Sources */,
 				641290DF2A64D730002AB740 /* SlideColor.swift in Sources */,

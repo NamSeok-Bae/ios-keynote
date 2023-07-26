@@ -14,57 +14,26 @@ class ViewController: UIViewController {
     
     private let containerBackgroundView: UIView = ColorView(color: .systemGray2)
     private let containerView: UIView = ColorView()
-    private let leftView: UIView = ColorView(color: .red)
-    private let backgroundControlTitleLabel: UILabel = ControlTitleLabel(title: "배경색")
-    private let alphaControlTitleLabel: UILabel = ControlTitleLabel(title: "투명도")
+    private let inspertorView = InspectorView()
     
-    private lazy var backgroundControlButton: UIButton = {
+    private lazy var slideListTableView: UITableView = UITableView(frame: .zero, style: .plain)
+    private lazy var slideAddButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isEnabled = false
         button.layer.cornerRadius = 5
-        button.layer.backgroundColor = UIColor.white.cgColor
-        button.setTitleColor(.gray, for: .disabled)
-        button.setTitle("비활성화 상태", for: .disabled)
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.addTarget(self,
-                         action: #selector(touchUpBackgroundColorButton),
-                         for: .touchUpInside)
+        button.layer.backgroundColor = UIColor.cyan.cgColor
+        button.setTitle("( + )", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(touchUpSlideAddButton), for: .touchUpInside)
         
         return button
-    }()
-    
-    private lazy var alphaNumberLabel: UILabel = {
-        let label = PaddingLabel(padding: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5))
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.isEnabled = false
-        label.layer.cornerRadius = 5
-        label.layer.backgroundColor = UIColor.white.cgColor
-        label.textAlignment = .right
-        label.font = .systemFont(ofSize: 15)
-        
-        return label
-    }()
-    
-    private lazy var alphaStepper: UIStepper = {
-        let stepper = UIStepper()
-        stepper.translatesAutoresizingMaskIntoConstraints = false
-        stepper.isEnabled = false
-        stepper.layer.cornerRadius = 5
-        stepper.maximumValue = 10
-        stepper.minimumValue = 0
-        stepper.addTarget(self,
-                          action: #selector(changeAlphaStepperValue),
-                           for: .valueChanged)
-        
-        return stepper
     }()
     
     // MARK: - Properties
     private var slideManager: DefaultSlideManager!
     private weak var currentView: SlideView<SquareSlide>!
     private var currentBackgroundColor: SlideColor!
-    private let tempSlideIndex = 0
+    private var currentSelectCellIndex: Int? = nil
     
     // MARK: - LifeCycles
     
@@ -87,48 +56,73 @@ class ViewController: UIViewController {
         
         setupViews()
         configureUI()
-        
+        setupInspectDefault()
         setupNotificationCenter()
-        setupContainerView()
-        setupTapGesture()
-        
-        slideManager.createSquareSlide()
     }
     
     // MARK: - Functions
     
     private func setupViews() {
         [
-            leftView,
+            slideListTableView,
             containerBackgroundView,
-            backgroundControlTitleLabel,
-            backgroundControlButton,
-            alphaControlTitleLabel,
-            alphaNumberLabel,
-            alphaStepper
+            inspertorView,
+            slideAddButton
         ].forEach {
             view.addSubview($0)
         }
     }
     
+    private func removeAllSubViews(view: UIView) {
+        view.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+    }
+    
+    private func setupTapGesture() -> UIGestureRecognizer {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapped))
+        tapGesture.delegate = self
+        
+        return tapGesture
+    }
+    
     private func setupContainerView() {
-        view.addSubview(containerView)
+        containerBackgroundView.addSubview(containerView)
         configureContainerView()
     }
     
-    private func setupTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewDidTapped))
-        tapGesture.delegate = self
-        view.addGestureRecognizer(tapGesture)
+    private func setupSlideView(index: Int) {
+        if let square = slideManager[index] as? SquareSlide {
+            setupInspectOfBackgroundColor(color: square.backgroundColor)
+            setupInspectOfAlpha(alpha: square.alpha)
+            
+            let squareView = SquareView(data: square)
+            squareView.isTapped = false
+            squareView.delegate = self
+            containerView.addSubview(squareView)
+            currentView = squareView
+            currentSelectCellIndex = index
+            
+            NSLayoutConstraint.activate([
+                squareView.widthAnchor.constraint(
+                    equalToConstant: CGFloat(square.sideLength)
+                ),
+                squareView.heightAnchor.constraint(
+                    equalToConstant: CGFloat(square.sideLength)
+                ),
+                squareView.centerXAnchor.constraint(
+                    equalTo: containerView.centerXAnchor
+                ),
+                squareView.centerYAnchor.constraint(
+                    equalTo: containerView.centerYAnchor
+                )
+            ])
+        } else {
+            // ImageSlide
+        }
     }
     
     private func setupNotificationCenter() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didCreateSlideView(_:)),
-            name: NSNotification.Name.slideViewCreate,
-            object: nil
-        )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didUpdateSlideViewAlpha(_:)),
@@ -143,30 +137,53 @@ class ViewController: UIViewController {
         )
     }
     
+    private func setupInspectDefault() {
+        currentSelectCellIndex = nil
+        currentBackgroundColor = nil
+        currentView = nil
+        inspertorView.bindDefault()
+    }
+    
+    private func setupInspectOfBackgroundColor(color: SlideColor) {
+        currentBackgroundColor = color
+        inspertorView.bindBackgroundButton(color: color)
+    }
+    
+    private func setupInspectOfAlpha(alpha: SlideAlpha) {
+        inspertorView.bindAlphaStepperAndLabel(alpha: alpha)
+    }
+    
+    // MARK: - Configure Functions
+    
     private func configureUI() {
         view.backgroundColor = .systemGray5
         
-        configureLeftView()
+        configureSlideListTableView()
         configureContainerBackgroundView()
-        configureBackgroundControlTitleLabel()
-        configureBackgroundControlButton()
-        configureAlphaControlTitleLabel()
-        configureAlphaNumberLabel()
-        configureAlphaStepper()
+        configureInsperctorView()
+        configureSlideAddButton()
     }
     
-    private func configureLeftView() {
+    private func configureSlideListTableView() {
+        slideListTableView.translatesAutoresizingMaskIntoConstraints = false
+        slideListTableView.dataSource = self
+        slideListTableView.delegate = self
+        slideListTableView.dragDelegate = self
+        slideListTableView.dropDelegate = self
+        slideListTableView.register(SlideListCell.self, forCellReuseIdentifier: SlideListCell.identifier)
+        slideListTableView.backgroundColor = .systemGray4
+        
         NSLayoutConstraint.activate([
-            leftView.leadingAnchor.constraint(
+            slideListTableView.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor
             ),
-            leftView.topAnchor.constraint(
+            slideListTableView.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor
             ),
-            leftView.bottomAnchor.constraint(
-                equalTo: view.bottomAnchor
+            slideListTableView.bottomAnchor.constraint(
+                equalTo: slideAddButton.topAnchor
             ),
-            leftView.trailingAnchor.constraint(
+            slideListTableView.trailingAnchor.constraint(
                 equalTo: containerBackgroundView.leadingAnchor
             )
         ])
@@ -192,6 +209,8 @@ class ViewController: UIViewController {
     }
     
     private func configureContainerView() {
+        containerView.addGestureRecognizer(setupTapGesture())
+        
         NSLayoutConstraint.activate([
             containerView.widthAnchor.constraint(
                 equalTo: containerBackgroundView.widthAnchor
@@ -209,157 +228,48 @@ class ViewController: UIViewController {
         ])
     }
     
-    private func configureBackgroundControlTitleLabel() {
+    private func configureInsperctorView() {
+        inspertorView.delegate = self
+        
         NSLayoutConstraint.activate([
-            backgroundControlTitleLabel.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor,
-                constant: 10
-            ),
-            backgroundControlTitleLabel.leadingAnchor.constraint(
-                equalTo: containerBackgroundView.trailingAnchor,
-                constant: 10
-            )
+            inspertorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            inspertorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            inspertorView.leadingAnchor.constraint(equalTo: containerBackgroundView.trailingAnchor),
+            inspertorView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
-    private func configureBackgroundControlButton() {
+    private func configureSlideAddButton() {
         NSLayoutConstraint.activate([
-            backgroundControlButton.topAnchor.constraint(
-                equalTo: backgroundControlTitleLabel.bottomAnchor,
-                constant: 10
-            ),
-            backgroundControlButton.leadingAnchor.constraint(
-                equalTo: backgroundControlTitleLabel.leadingAnchor
-            ),
-            backgroundControlButton.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                constant: -10
-            ),
-            backgroundControlButton.heightAnchor.constraint(
-                equalTo: backgroundControlTitleLabel.heightAnchor
-            )
+            slideAddButton.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            slideAddButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            slideAddButton.trailingAnchor.constraint(equalTo: containerBackgroundView.leadingAnchor),
+            slideAddButton.heightAnchor.constraint(equalTo: slideAddButton.widthAnchor, multiplier: 0.4)
         ])
-    }
-    
-    private func configureAlphaControlTitleLabel() {
-        NSLayoutConstraint.activate([
-            alphaControlTitleLabel.topAnchor.constraint(
-                equalTo: backgroundControlButton.bottomAnchor,
-                constant: 10
-            ),
-            alphaControlTitleLabel.leadingAnchor.constraint(
-                equalTo: backgroundControlTitleLabel.leadingAnchor
-            )
-        ])
-    }
-    
-    private func configureAlphaNumberLabel() {
-        NSLayoutConstraint.activate([
-            alphaNumberLabel.widthAnchor.constraint(
-                equalTo: alphaControlTitleLabel.widthAnchor
-            ),
-            alphaNumberLabel.heightAnchor.constraint(
-                equalTo: alphaControlTitleLabel.heightAnchor
-            ),
-            alphaNumberLabel.topAnchor.constraint(
-                equalTo: alphaControlTitleLabel.bottomAnchor,
-                constant: 10
-            ),
-            alphaNumberLabel.leadingAnchor.constraint(
-                equalTo: alphaControlTitleLabel.leadingAnchor
-            )
-        ])
-    }
-    
-    private func configureAlphaStepper() {
-        NSLayoutConstraint.activate([
-            alphaStepper.leadingAnchor.constraint(
-                equalTo: alphaNumberLabel.trailingAnchor,
-                constant: 5
-            ),
-            alphaStepper.heightAnchor.constraint(
-                equalTo: alphaNumberLabel.heightAnchor
-            ),
-            alphaStepper.trailingAnchor.constraint(
-                equalTo: backgroundControlButton.trailingAnchor
-            ),
-            alphaStepper.topAnchor.constraint(
-                equalTo: alphaNumberLabel.topAnchor
-            )
-        ])
-    }
-    
-    private func setupInspectOfBackgroundColor(color: SlideColor) {
-        let uiColor = UIColor(color: color)
-        currentBackgroundColor = color
-        backgroundControlButton.setTitle(
-            color.convertHexString(),
-            for: .normal
-        )
-        backgroundControlButton.setTitleColor(
-            uiColorToComplementaryColor(uiColor),
-            for: .normal
-        )
-        backgroundControlButton.layer.backgroundColor = uiColor.cgColor
-    }
-    
-    private func setupInspectOfAlpha(alpha: Int) {
-        alphaNumberLabel.text = "\(alpha)"
-        alphaStepper.value = Double(alpha)
     }
     
     // MARK: - Objc Functions
-    @objc private func viewDidTapped(sender: UITapGestureRecognizer) {
+    @objc private func didTapped(sender: UITapGestureRecognizer) {
         currentView.isTapped = currentView.isTapped ? false : true
     }
     
-    @objc private func changeAlphaStepperValue(sender: UIStepper) {
-        let alpha = Int(alphaStepper.value)
-        slideManager.updateSlideAlpha(slideIndex: tempSlideIndex,
-                                      alpha: alpha)
-    }
-    
-    @objc func didCreateSlideView(_ notification: Notification) {
-        if let square = notification.object as? SquareSlide {
-            setupInspectOfBackgroundColor(color: square.backgroundColor)
-            setupInspectOfAlpha(alpha: square.alpha.value)
-            
-            let squareView = SquareView(data: square)
-            squareView.delegate = self
-            containerView.addSubview(squareView)
-            currentView = squareView
-            
-            NSLayoutConstraint.activate([
-                squareView.widthAnchor.constraint(
-                    equalToConstant: CGFloat(square.sideLength)
-                ),
-                squareView.heightAnchor.constraint(
-                    equalToConstant: CGFloat(square.sideLength)
-                ),
-                squareView.centerXAnchor.constraint(
-                    equalTo: containerView.centerXAnchor
-                ),
-                squareView.centerYAnchor.constraint(
-                    equalTo: containerView.centerYAnchor
-                )
-            ])
-        } else {
-            // ImageSlide
-        }
+    @objc private func touchUpSlideAddButton(sender: UIButton) {
+        slideManager.createSquareSlide()
+        slideListTableView.reloadData()
     }
     
     @objc func didUpdateSlideViewAlpha(_ notification: Notification) {
-        if let alpha = notification.object as? Int {
+        if let alpha = notification.userInfo?["SlideAlpha"] as? SlideAlpha {
             setupInspectOfAlpha(alpha: alpha)
             currentView.layer.setBackgroundColorWithAlpha(
                 color: currentBackgroundColor,
-                alpha: CGFloat(alpha) / 10
+                alpha: alpha
             )
         }
     }
     
     @objc func didUpdateSlideViewBackgroundColor(_ notification: Notification) {
-        if let color = notification.object as? SlideColor {
+        if let color = notification.userInfo?["SlideColor"] as? SlideColor {
             setupInspectOfBackgroundColor(color: color)
             currentView.layer.setBackgroundColorWithAlpha(color: color)
         }
@@ -374,37 +284,39 @@ class ViewController: UIViewController {
         
         return SlideColor(red: red, green: green, blue: blue)
     }
-    
-    private func uiColorToComplementaryColor(_ uiColor: UIColor) -> UIColor {
-        let ciColor = uiColor.ciColor
-        let red: CGFloat = 1.0 - ciColor.red
-        let green: CGFloat = 1.0 - ciColor.green
-        let blue: CGFloat = 1.0 - ciColor.blue
-        
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+}
+
+// MARK: - Slide Delegate
+extension ViewController: SlideDelegate {
+    func detectTappedSlide(isTapped: Bool) {
+        inspertorView.bindTapped(isTapped: isTapped)
     }
 }
 
-// MARK: - RandomValueCreator Protocol
-extension ViewController: UIColorPickerViewControllerDelegate {
-    @objc private func touchUpBackgroundColorButton(sender: UIButton) {
-        let backgroundColor = backgroundControlButton.layer.backgroundColor ?? UIColor.white.cgColor
+// MARK: - InspertorView Delegate & UIColorPickVeiw Delegate
+extension ViewController: UIColorPickerViewControllerDelegate, InspertorViewDelegate {
+    func changeAlphaStepperValue(value: Int) {
+        slideManager.updateSlideAlpha(slideIndex: currentSelectCellIndex ?? 0,
+                                      alpha: SlideAlpha(alpha: value))
+    }
+    
+    func touchUpBackgroundColorButton(button: UIButton) {
+        let backgroundColor = button.layer.backgroundColor ?? UIColor.white.cgColor
         let picker = UIColorPickerViewController()
         picker.selectedColor = UIColor(cgColor: backgroundColor)
         picker.delegate = self
         self.present(picker, animated: true, completion: nil)
     }
     
-    // colorPickerViewController 선택 종료시 호출
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         let slideColor = uiColorToSlideColor(viewController.selectedColor)
-        let alpha = Int(viewController.selectedColor.alpha * 10)
+        let alpha = SlideAlpha(alpha: viewController.selectedColor.alpha)
         slideManager.updateSquareSlideBackgroundColor(
-            slideIndex: tempSlideIndex,
+            slideIndex: currentSelectCellIndex ?? 0,
             color: slideColor
         )
         slideManager.updateSlideAlpha(
-            slideIndex: tempSlideIndex,
+            slideIndex: currentSelectCellIndex ?? 0,
             alpha: alpha
         )
     }
@@ -419,11 +331,74 @@ extension ViewController: UIGestureRecognizerDelegate {
     }
 }
 
-// MARK: - Slide Delegate
-extension ViewController: SlideDelegate {
-    func detectSlideTapped(isTapped: Bool) {
-        alphaNumberLabel.isEnabled = isTapped
-        backgroundControlButton.isEnabled = isTapped
-        alphaStepper.isEnabled = isTapped
+// MARK: - TableView Delegate & Datasource
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return slideManager.slideCount
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SlideListCell.identifier,
+                                                       for: indexPath) as? SlideListCell else {
+            return UITableViewCell()
+        }
+        
+        if let slide = slideManager[indexPath.row] {
+            cell.bind(slide: slide, index: indexPath.row)
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.width * (0.5)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        removeAllSubViews(view: containerBackgroundView)
+        removeAllSubViews(view: containerView)
+        setupInspectDefault()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? SlideListCell {
+            if cell.isDisplayed && cell.isSelected {
+                setupContainerView()
+                setupSlideView(index: indexPath.row)
+            } else {
+                removeAllSubViews(view: containerBackgroundView)
+                removeAllSubViews(view: containerView)
+                setupInspectDefault()
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        guard let srcCell = tableView.cellForRow(at: sourceIndexPath) as? SlideListCell,
+              let destCell = tableView.cellForRow(at: destinationIndexPath) as? SlideListCell else {
+            return
+        }
+        srcCell.bind(index: destinationIndexPath.row)
+        destCell.bind(index: sourceIndexPath.row)
+        slideManager.moveSlide(sourceIndex: sourceIndexPath.row, destinationIndex: destinationIndexPath.row)
+    }
+}
+
+extension ViewController: UITableViewDragDelegate, UITableViewDropDelegate {
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        return [UIDragItem(itemProvider: NSItemProvider())]
+    }
+    
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        if session.localDragSession != nil {
+            return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        }
+        return UITableViewDropProposal(operation: .cancel, intent: .unspecified)
+    }
+    
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) { }
 }

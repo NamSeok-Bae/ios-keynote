@@ -15,15 +15,13 @@ protocol RandomValueCreator {
 
 extension RandomValueCreator {
     func createRandomIdentifier() -> String {
-        var randomValueArray: [String] = []
+        let stringArray = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".map { String($0) }
+        var randomValueArray = [String]()
         
         for _ in 0..<3 {
             var randomValue = ""
             for _ in 0..<3 {
-                let randomAsciiNumber = [createRandomInt(range: 48...57),
-                                         createRandomInt(range: 97...122)].randomElement() ?? 48
-                let string = String(UnicodeScalar(randomAsciiNumber)!)
-                randomValue.append(string)
+                randomValue.append(stringArray.randomElement() ?? "a")
             }
             randomValueArray.append(randomValue)
         }

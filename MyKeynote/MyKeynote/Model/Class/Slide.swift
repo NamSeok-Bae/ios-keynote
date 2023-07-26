@@ -19,7 +19,7 @@ class Slide: CustomStringConvertible {
         self.alpha = SlideAlpha(alpha: alpha)
     }
     
-    func updateAlpha(alpha: Int) {
-        self.alpha.updateAlpha(alpha)
+    func updateAlpha(alpha: SlideAlpha) {
+        self.alpha = alpha
     }
 }

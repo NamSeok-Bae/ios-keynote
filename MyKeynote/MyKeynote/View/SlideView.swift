@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SlideDelegate: AnyObject {
-    func detectSlideTapped(isTapped: Bool)
+    func detectTappedSlide(isTapped: Bool)
 }
 
 class SlideView<T: Slide>: UIView {
@@ -17,17 +17,17 @@ class SlideView<T: Slide>: UIView {
     var isTapped: Bool = false {
         didSet(oldValue) {
 	            self.layer.borderWidth = isTapped ? 2 : 0
-            self.delegate?.detectSlideTapped(isTapped: isTapped)
+            self.delegate?.detectTappedSlide(isTapped: isTapped)
         }
     }
     
-    private var identifier: String!
+    private var identifier: SlideIdentifier!
     weak var delegate: SlideDelegate?
     private(set) var data: T? = nil
     
     // MARK: - LifeCycles
     
-    init(identifier: String, alpha: Int) {
+    init(identifier: SlideIdentifier, alpha: SlideAlpha) {
         super.init(frame: .zero)
         configureUI()
         setupProperties(identifier: identifier, alpha: alpha)
@@ -54,14 +54,14 @@ class SlideView<T: Slide>: UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func setupProperties(identifier: String, alpha: Int) {
+    func setupProperties(identifier: SlideIdentifier, alpha: SlideAlpha) {
         self.identifier = identifier
-        self.alpha = CGFloat(alpha) / 10
+        self.alpha = CGFloat(alpha.value) / 10
     }
     
     func bindData(data: T) {
         self.data = data
-        setupProperties(identifier: data.identifier.value,
-                        alpha: data.alpha.value)
+        setupProperties(identifier: data.identifier,
+                        alpha: data.alpha)
     }
 }

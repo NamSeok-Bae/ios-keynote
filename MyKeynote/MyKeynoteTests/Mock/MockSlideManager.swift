@@ -34,9 +34,9 @@ class MockSlideManager: SlideManager {
         slideArray.append(newSlide)
     }
     
-    func updateSlideAlpha(slideIndex: Int, alpha: Int) {
+    func updateSlideAlpha(slideIndex: Int, alpha: SlideAlpha) {
         slideArray[0] = factory.createSlide(creator: MockSquareSlideFactory())
-        slideArray[0].updateAlpha(alpha: 10)
+        slideArray[0].updateAlpha(alpha: SlideAlpha(alpha: 10))
     }
     
     func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor) {

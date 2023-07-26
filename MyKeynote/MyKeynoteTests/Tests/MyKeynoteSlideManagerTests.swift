@@ -58,7 +58,7 @@ final class MyKeynoteSlideManagerTests: XCTestCase {
         }
         XCTAssertEqual(slide.alpha.value, 10)
         
-        slide.updateAlpha(alpha: 5)
+        slide.updateAlpha(alpha: SlideAlpha(alpha: 5))
         XCTAssertEqual(slide.alpha.value, 5)
     }
     
@@ -70,7 +70,7 @@ final class MyKeynoteSlideManagerTests: XCTestCase {
         }
         XCTAssertEqual(slide.alpha.value, 10)
         
-        slide.updateAlpha(alpha: 15)
+        slide.updateAlpha(alpha: SlideAlpha(alpha: 15))
         XCTAssertEqual(slide.alpha.value, 10)
     }
     
@@ -82,7 +82,7 @@ final class MyKeynoteSlideManagerTests: XCTestCase {
         }
         XCTAssertEqual(slide.alpha.value, 10)
         
-        slide.updateAlpha(alpha: -3)
+        slide.updateAlpha(alpha: SlideAlpha(alpha: -3))
         XCTAssertEqual(slide.alpha.value, 0)
     }
     

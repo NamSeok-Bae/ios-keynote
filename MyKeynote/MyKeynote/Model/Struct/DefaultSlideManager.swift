@@ -8,13 +8,13 @@
 import Foundation
 
 protocol SlideManager {
-    mutating func createSquareSlide()
-    mutating func createImageSlide()
-    mutating func updateSlideAlpha(slideIndex: Int, alpha: Int)
-    mutating func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor)
+    func createSquareSlide()
+    func createImageSlide()
+    func updateSlideAlpha(slideIndex: Int, alpha: SlideAlpha)
+    func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor)
 }
 
-struct DefaultSlideManager: SlideManager {
+class DefaultSlideManager: SlideManager {
     private(set) var slideArray: [Slide]
     private let factory: SlideFactory
     var slideCount: Int {
@@ -22,8 +22,8 @@ struct DefaultSlideManager: SlideManager {
             slideArray.count
         }
     }
-    subscript<T>(index: Int) -> T? {
-        return index >= 0 && index < slideCount ? slideArray[index] as? T : nil
+    subscript(index: Int) -> Slide? {
+        return index >= 0 && index < slideArray.count ? slideArray[index] : nil
     }
     
     init() {
@@ -31,25 +31,17 @@ struct DefaultSlideManager: SlideManager {
         factory = DefaultSlideFactory()
     }
     
-    mutating func createSquareSlide() {
+    func createSquareSlide() {
         let newSlide = factory.createSlide(creator: SquareSlideFactory())
         slideArray.append(newSlide)
-        NotificationCenter.default.post(
-            name: Notification.Name.slideViewCreate,
-            object: newSlide
-        )
     }
 
-    mutating func createImageSlide() {
+    func createImageSlide() {
         let newSlide = factory.createSlide(creator: ImageSlideFactory())
         slideArray.append(newSlide)
-        NotificationCenter.default.post(
-            name: Notification.Name.slideViewCreate,
-            object: newSlide
-        )
     }
     
-    mutating func updateSlideAlpha(slideIndex: Int, alpha: Int) {
+    func updateSlideAlpha(slideIndex: Int, alpha: SlideAlpha) {
         slideArray[slideIndex].updateAlpha(alpha: alpha)
         NotificationCenter.default.post(
             name: NSNotification.Name.slideViewAlphaUpdate,
@@ -57,7 +49,7 @@ struct DefaultSlideManager: SlideManager {
         )
     }
     
-    mutating func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor) {
+    func updateSquareSlideBackgroundColor(slideIndex: Int, color: SlideColor) {
         if let slide = slideArray[slideIndex] as? SquareSlide {
             slide.updateBackgroundColor(color: color)
             NotificationCenter.default.post(
@@ -65,5 +57,13 @@ struct DefaultSlideManager: SlideManager {
                 object: color
             )
         }
+    }
+    
+    func moveSlide(sourceIndex: Int, destinationIndex: Int) {
+        if sourceIndex == destinationIndex { return }
+        
+        let slide = slideArray[sourceIndex]
+        slideArray.remove(at: sourceIndex)
+        slideArray.insert(slide, at: destinationIndex)
     }
 }
