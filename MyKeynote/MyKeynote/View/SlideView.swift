@@ -9,9 +9,11 @@ import UIKit
 
 protocol SlideDelegate: AnyObject {
     func detectTappedSlide(isTapped: Bool)
+    func presentImagePicker()
 }
 
-class SlideView<T: Slide>: UIView {
+class SlideView: UIView {
+
     // MARK: - Properties
     
     var isTapped: Bool = false {
@@ -23,7 +25,6 @@ class SlideView<T: Slide>: UIView {
     
     private var identifier: SlideIdentifier!
     weak var delegate: SlideDelegate?
-    private(set) var data: T? = nil
     
     // MARK: - LifeCycles
     
@@ -49,8 +50,8 @@ class SlideView<T: Slide>: UIView {
     }
     
     // MARK: - Functions
-    private func configureUI() {
-        self.layer.backgroundColor = UIColor.white.cgColor
+    func configureUI() {
+        self.layer.backgroundColor = UIColor.systemGray5.cgColor
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -59,8 +60,7 @@ class SlideView<T: Slide>: UIView {
         self.alpha = CGFloat(alpha.value) / 10
     }
     
-    func bindData(data: T) {
-        self.data = data
+    func bindData(data: Slide) {
         setupProperties(identifier: data.identifier,
                         alpha: data.alpha)
     }
