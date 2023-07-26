@@ -31,9 +31,8 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     private var slideManager: DefaultSlideManager!
-    private weak var currentView: SlideView<SquareSlide>!
+    private weak var currentView: SlideView!
     private var currentBackgroundColor: SlideColor!
-    private var currentSelectCellIndex: Int? = nil
     
     // MARK: - LifeCycles
     
@@ -42,12 +41,12 @@ class ViewController: UIViewController {
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        slideManager = DefaultSlideManager()
+        slideManager = DefaultSlideManager(factory: DefaultSlideFactory())
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     required init?(coder: NSCoder) {
-        slideManager = DefaultSlideManager()
+        slideManager = DefaultSlideManager(factory: DefaultSlideFactory())
         super.init(coder: coder)
     }
     
@@ -92,16 +91,17 @@ class ViewController: UIViewController {
     }
     
     private func setupSlideView(index: Int) {
+        slideManager.updateCurrentUseIndex(index: index)
+        
         if let square = slideManager[index] as? SquareSlide {
             setupInspectOfBackgroundColor(color: square.backgroundColor)
             setupInspectOfAlpha(alpha: square.alpha)
             
-            let squareView = SquareView(data: square)
+            let squareView = SquareSlideView(data: square)
             squareView.isTapped = false
             squareView.delegate = self
             containerView.addSubview(squareView)
             currentView = squareView
-            currentSelectCellIndex = index
             
             NSLayoutConstraint.activate([
                 squareView.widthAnchor.constraint(
@@ -117,8 +117,16 @@ class ViewController: UIViewController {
                     equalTo: containerView.centerYAnchor
                 )
             ])
-        } else {
-            // ImageSlide
+        } else if let image = slideManager[index] as? ImageSlide {
+            setupInspectOfBackgroundColor(color: uiColorToSlideColor(.systemGray5))
+            setupInspectOfAlpha(alpha: image.alpha)
+            
+            let imageView = ImageSlideView(data: image)
+            imageView.isTapped = false
+            imageView.delegate = self
+            containerView.addSubview(imageView)
+            configureImageSlideView(size: image.size, imageView: imageView)
+            currentView = imageView
         }
     }
     
@@ -135,10 +143,27 @@ class ViewController: UIViewController {
             name: NSNotification.Name.slideViewBackgroundColorUpdate,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didMovedSlide(_:)),
+            name: NSNotification.Name.slideViewMove,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didUpdateSlideImageString(_:)),
+            name: NSNotification.Name.slideViewImageStringUpdate,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didUpdateSlideSize(_:)),
+            name: NSNotification.Name.slideViewSizeUpdate,
+            object: nil
+        )
     }
     
     private func setupInspectDefault() {
-        currentSelectCellIndex = nil
         currentBackgroundColor = nil
         currentView = nil
         inspertorView.bindDefault()
@@ -170,7 +195,7 @@ class ViewController: UIViewController {
         slideListTableView.delegate = self
         slideListTableView.dragDelegate = self
         slideListTableView.dropDelegate = self
-        slideListTableView.register(SlideListCell.self, forCellReuseIdentifier: SlideListCell.identifier)
+        slideListTableView.register(SlideListCell.self, forCellReuseIdentifier: SlideListCell.reuseIdentifier)
         slideListTableView.backgroundColor = .systemGray4
         
         NSLayoutConstraint.activate([
@@ -254,7 +279,7 @@ class ViewController: UIViewController {
     }
     
     @objc private func touchUpSlideAddButton(sender: UIButton) {
-        slideManager.createSquareSlide()
+        slideManager.createRamdomSlide()
         slideListTableView.reloadData()
     }
     
@@ -271,8 +296,58 @@ class ViewController: UIViewController {
     @objc func didUpdateSlideViewBackgroundColor(_ notification: Notification) {
         if let color = notification.userInfo?["SlideColor"] as? SlideColor {
             setupInspectOfBackgroundColor(color: color)
-            currentView.layer.setBackgroundColorWithAlpha(color: color)
+            currentView.layer.setBackgroundColor(color: color)
         }
+    }
+    
+    @objc func didMovedSlide(_ notification: Notification) {
+        if let isMoved = notification.userInfo?["isSlideMoved"] as? Bool, isMoved {
+            removeAllSubViews(view: containerBackgroundView)
+            removeAllSubViews(view: containerView)
+            setupInspectDefault()
+            slideListTableView.reloadData()
+        }
+    }
+    
+    @objc func didUpdateSlideImageString(_ notification: Notification) {
+        if let imageString = notification.userInfo?["SlideImageString"] as? String,
+           let imageView = currentView as? ImageSlideView,
+           let data = Data(base64Encoded: imageString, options: .ignoreUnknownCharacters),
+           let image = UIImage(data: data)  {
+            let newImage = image.resize(standardSize: containerView.frame.size)
+            slideManager.updateImageSlideSize(size: newImage.size)
+            imageView.bindImage(image: newImage)
+        }
+    }
+    
+    @objc func didUpdateSlideSize(_ notification: Notification) {
+        if let size = notification.userInfo?["SlideSize"] as? CGSize,
+           let imageView = currentView as? ImageSlideView {
+            configureImageSlideView(size: size, imageView: imageView)
+        }
+    }
+    
+    func configureImageSlideView(size: CGSize, imageView: ImageSlideView) {
+        imageView.constraints.forEach {
+            $0.isActive = false
+        }
+        
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(
+                equalToConstant: size.width
+            ),
+            imageView.heightAnchor.constraint(
+                equalToConstant: size.height
+            ),
+            imageView.centerXAnchor.constraint(
+                equalTo: containerView.centerXAnchor
+            ),
+            imageView.centerYAnchor.constraint(
+                equalTo: containerView.centerYAnchor
+            )
+        ])
+        
+        imageView.configureImageButton()
     }
     
     // MARK: - UIColor Functions
@@ -289,15 +364,41 @@ class ViewController: UIViewController {
 // MARK: - Slide Delegate
 extension ViewController: SlideDelegate {
     func detectTappedSlide(isTapped: Bool) {
-        inspertorView.bindTapped(isTapped: isTapped)
+        inspertorView.bindTapped(isTapped: isTapped, curretViewType: type(of: currentView))
+    }
+    
+    func presentImagePicker() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.allowsEditing = true
+        imagePicker.delegate = self
+        self.present(imagePicker, animated: true)
     }
 }
 
-// MARK: - InspertorView Delegate & UIColorPickVeiw Delegate
-extension ViewController: UIColorPickerViewControllerDelegate, InspertorViewDelegate {
+// MARK: - UIImagePickerController Delegate
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: false) { () in
+            let alert = UIAlertController(title: "", message: "이미지 선택이 취소되었습니다.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+            self.present(alert, animated: false)
+        }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: false) { [weak self] () in
+            guard let self,
+                  let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
+            self.slideManager.updateImageSlideImageString(data: image.pngData())
+        }
+    }
+}
+
+// MARK: - InspertorView Delegate
+extension ViewController: InspertorViewDelegate {
     func changeAlphaStepperValue(value: Int) {
-        slideManager.updateSlideAlpha(slideIndex: currentSelectCellIndex ?? 0,
-                                      alpha: SlideAlpha(alpha: value))
+        slideManager.updateSlideAlpha(alpha: SlideAlpha(alpha: value))
     }
     
     func touchUpBackgroundColorButton(button: UIButton) {
@@ -307,22 +408,19 @@ extension ViewController: UIColorPickerViewControllerDelegate, InspertorViewDele
         picker.delegate = self
         self.present(picker, animated: true, completion: nil)
     }
-    
+}
+
+// MARK: - UIColorPickerViewControllerDelegate
+extension ViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
         let slideColor = uiColorToSlideColor(viewController.selectedColor)
         let alpha = SlideAlpha(alpha: viewController.selectedColor.alpha)
-        slideManager.updateSquareSlideBackgroundColor(
-            slideIndex: currentSelectCellIndex ?? 0,
-            color: slideColor
-        )
-        slideManager.updateSlideAlpha(
-            slideIndex: currentSelectCellIndex ?? 0,
-            alpha: alpha
-        )
+        slideManager.updateSquareSlideBackgroundColor(color: slideColor)
+        slideManager.updateSlideAlpha(alpha: alpha)
     }
 }
 
-// MARK: - UIGestureRecognizerDelegate Delegate
+// MARK: - UIGestureRecognizerDelegate
 extension ViewController: UIGestureRecognizerDelegate {
     // SuperView Touch를 허용할지 안할지 판단
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
@@ -338,10 +436,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SlideListCell.identifier,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SlideListCell.reuseIdentifier,
                                                        for: indexPath) as? SlideListCell else {
             return UITableViewCell()
         }
+        cell.addInteraction(UIContextMenuInteraction(delegate: self))
         
         if let slide = slideManager[indexPath.row] {
             cell.bind(slide: slide, index: indexPath.row)
@@ -401,4 +500,30 @@ extension ViewController: UITableViewDragDelegate, UITableViewDropDelegate {
     }
     
     func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) { }
+}
+
+// MARK: - UIContextMenuInteraction Delegate
+extension ViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        guard let cell = interaction.view as? SlideListCell else { return nil }
+        slideManager.searchSlideByIdentifier(identifier: cell.identifier)
+        
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_: [UIMenuElement]) -> UIMenu? in
+            guard let self else { return UIMenu() }
+            let btn1 = UIAction(title: "맨 앞으로 보내기") { (UIAction) in
+                self.slideManager.moveSlide(moveType: .front)
+            }
+            let btn2 = UIAction(title: "앞으로 보내기") { (UIAction) in
+                self.slideManager.moveSlide(moveType: .forward)
+            }
+            let btn3 = UIAction(title: "뒤로 보내기") { (UIAction) in
+                self.slideManager.moveSlide(moveType: .backward)
+            }
+            let btn4 = UIAction(title: "맨 뒤로 보내기") { (UIAction) in
+                self.slideManager.moveSlide(moveType: .back)
+            }
+            
+            return UIMenu(children: [btn1, btn2, btn3, btn4])
+        }
+    }
 }
