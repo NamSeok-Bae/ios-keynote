@@ -27,8 +27,7 @@ class ImageSlideFactory: SlideCreator {
     typealias Value = ImageSlide
     
     func createSlide() -> Value {
-         return ImageSlide(identifier: createRandomIdentifier(),
-                           alpha: createRandomInt(range: 0...10))
+         return ImageSlide(identifier: createRandomIdentifier())
     }
 }
 
