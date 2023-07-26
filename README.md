@@ -1,25 +1,26 @@
 # ios-keynote 3~4주차 프로젝트
 
-## 슬라이드 목록 표시 (완료일 7/26 00:00)
+## 사진 슬라이드 추가하기 (완료일 7/27 01:00)
 
 ### 주요 작업 내용
 
-- 오른쪽에 위치한 Inspector 처리 부분의 뷰들을 분리 (InspertorView 안에 처리)
-- UITableView 생성 및 구현
-    - Add Button을 통한 동적 Cell 생성
-    - DragDelegate 와 DropDelegate를 활용하여 Drag And Drop 구현
-    - Cell 의 선택과 해제가 가능하도록 구현
+- Cell에 ContextMenuInteraction를 할당
+- ImageSlideView에 원 탭, 투 탭 기능 할당
+- ContextMenuInteraction의 메뉴에 따른 동작 구현
+- UIGraphicsImageRenderer를 활용한 Image Resize
+    - resize한 결과에 따라 ImageSlideView Size 재정의
+- SlideFactory에서 Random Slide 생성
 
 ## 작업결과
 
-### 셀 선택과 해제
-<img width="100%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/3f499046-c1bb-4093-b8cf-75bdd3d231f1">
+### 사진 등록
+<img width="100%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/2334c759-d0e4-4543-81a7-3f1dc0b4518b">
 
-### 셀 드래그 앤 드롭
-<img width="100%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/2e855310-ace3-41cd-a71a-f713b162bddc">
+### 메뉴 4개를 통한 Slide 이동
+<img width="100%" alt="image" src="https://github.com/team-dayeng/Dayeng/assets/76683388/01935822-51b6-4159-bb29-f8e9a65e915e">
 
 ## 고민
-- 구현을 하는 과정에서 어떤 코드 작성이 좋은 코드인가에 대해 고민하였습니다.
-- 동료 개발자가 실행돌릴 때 컴파일 에러가 뜨는 것이 좋은건지, 아무렇게나 써도 돌아가는 코드가 좋은건지에 대해서 입니다.
-- 전자는 컴파일 시점에서 확실히 확인할 수 있다는 특징이 있고, 후자에 대해선 테스트 코드를 통해 확인할 수 있다는 특징이 있다고 생각합니다.
-- JK님은 어떻게 생각하시나요?
+- UIView 내부에서 자그마한 로직들을 구현하면서 생긴 의문점이 있습니다.
+- 어제 스쿼드 세션 뿐만 아니라 동료분들과 대화하면서 View 내부의 프로퍼티를 사용해 로직을 구현하는 과정을 Model에서 진행하는게 맞다고 생각하였습니다.
+- 하지만 isTapped = !isTapped 또는 이런 비슷한 로직들을 위해 따로 ViewModel을 만들어서 주는게 맞는지, 하위 뷰의 1개의 로직만을 위한 ViewModel을 만드는게 맞는건지 고민이 있습니다.
+- 제 생각엔 단순한 로직 같은 경우 Model을 만들고 binding을 해주는 것보다 View에서 처리하는게 맞다고 생각하는데, 어떤 것이 효율적인 성능을 이끌어내는지 궁금합니다.
