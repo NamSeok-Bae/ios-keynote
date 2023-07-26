@@ -60,7 +60,6 @@ class ViewController: UIViewController {
     }
     
     // MARK: - Functions
-    
     private func setupViews() {
         [
             slideListTableView,
@@ -176,6 +175,12 @@ class ViewController: UIViewController {
     
     private func setupInspectOfAlpha(alpha: SlideAlpha) {
         inspertorView.bindAlphaStepperAndLabel(alpha: alpha)
+    }
+    
+    private func initailizeViews() {
+        removeAllSubViews(view: containerBackgroundView)
+        removeAllSubViews(view: containerView)
+        setupInspectDefault()
     }
     
     // MARK: - Configure Functions
@@ -303,16 +308,14 @@ class ViewController: UIViewController {
     
     @objc private func touchUpSlideAddButton(sender: UIButton) {
         slideManager.createRamdomSlide()
+        initailizeViews()
         slideListTableView.reloadData()
     }
     
     @objc func didUpdateSlideViewAlpha(_ notification: Notification) {
         if let alpha = notification.userInfo?["SlideAlpha"] as? SlideAlpha {
             setupInspectOfAlpha(alpha: alpha)
-            currentView.layer.setBackgroundColorWithAlpha(
-                color: currentBackgroundColor,
-                alpha: alpha
-            )
+            currentView.setBackgroundColorWithAlpha(color: currentBackgroundColor, alpha: alpha)
         }
     }
     
@@ -454,9 +457,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        removeAllSubViews(view: containerBackgroundView)
-        removeAllSubViews(view: containerView)
-        setupInspectDefault()
+        initailizeViews()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -465,9 +466,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 setupContainerView()
                 setupSlideView(index: indexPath.row)
             } else {
-                removeAllSubViews(view: containerBackgroundView)
-                removeAllSubViews(view: containerView)
-                setupInspectDefault()
+                initailizeViews()
             }
         }
     }
