@@ -106,22 +106,8 @@ class ViewController: UIViewController {
             squareView.isTapped = false
             squareView.delegate = self
             containerView.addSubview(squareView)
+            configureSlideView(size: CGSize(width: square.sideLength, height: square.sideLength), view: squareView)
             currentView = squareView
-            
-            NSLayoutConstraint.activate([
-                squareView.widthAnchor.constraint(
-                    equalToConstant: CGFloat(square.sideLength)
-                ),
-                squareView.heightAnchor.constraint(
-                    equalToConstant: CGFloat(square.sideLength)
-                ),
-                squareView.centerXAnchor.constraint(
-                    equalTo: containerView.centerXAnchor
-                ),
-                squareView.centerYAnchor.constraint(
-                    equalTo: containerView.centerYAnchor
-                )
-            ])
         } else if let image = slideManager[index] as? ImageSlide {
             setupInspectOfBackgroundColor(color: uiColorToSlideColor(.systemGray5))
             setupInspectOfAlpha(alpha: image.alpha)
@@ -130,7 +116,7 @@ class ViewController: UIViewController {
             imageView.isTapped = false
             imageView.delegate = self
             containerView.addSubview(imageView)
-            configureImageSlideView(size: image.size, imageView: imageView)
+            configureSlideView(size: image.size, view: imageView)
             currentView = imageView
         }
     }
@@ -225,18 +211,18 @@ class ViewController: UIViewController {
         ])
     }
     
-    private func configureImageSlideView(size: CGSize, imageView: ImageSlideView) {
+    private func configureSlideView(size: CGSize, view: SlideView) {
         NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(
+            view.widthAnchor.constraint(
                 equalToConstant: size.width
             ),
-            imageView.heightAnchor.constraint(
+            view.heightAnchor.constraint(
                 equalToConstant: size.height
             ),
-            imageView.centerXAnchor.constraint(
+            view.centerXAnchor.constraint(
                 equalTo: containerView.centerXAnchor
             ),
-            imageView.centerYAnchor.constraint(
+            view.centerYAnchor.constraint(
                 equalTo: containerView.centerYAnchor
             )
         ])
@@ -350,7 +336,7 @@ class ViewController: UIViewController {
         if let size = notification.userInfo?["SlideSize"] as? CGSize,
            let imageView = currentView as? ImageSlideView {
             removeAllConstraint(view: imageView)
-            configureImageSlideView(size: size, imageView: imageView)
+            configureSlideView(size: size, view: imageView)
         }
     }
     
