@@ -23,7 +23,7 @@
 		641290FB2A6775D0002AB740 /* ControlTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FA2A6775D0002AB740 /* ControlTitleLabel.swift */; };
 		641290FD2A677D29002AB740 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FC2A677D29002AB740 /* PaddingLabel.swift */; };
 		641290FF2A678088002AB740 /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641290FE2A678088002AB740 /* ColorView.swift */; };
-		641291012A67A4F1002AB740 /* SquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291002A67A4F1002AB740 /* SquareView.swift */; };
+		641291012A67A4F1002AB740 /* SquareSlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291002A67A4F1002AB740 /* SquareSlideView.swift */; };
 		641291032A67BA21002AB740 /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291022A67BA21002AB740 /* UIColor+.swift */; };
 		641291132A68C299002AB740 /* SlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291122A68C299002AB740 /* SlideView.swift */; };
 		641291152A68D65D002AB740 /* CALayer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641291142A68D65D002AB740 /* CALayer+.swift */; };
@@ -46,6 +46,8 @@
 		641291402A6E3E8E002AB740 /* NotificiationName+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6412911C2A6E0919002AB740 /* NotificiationName+.swift */; };
 		647C01DB2A6E6E7A000D5542 /* SlideListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */; };
 		647C01E12A70165A000D5542 /* InspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01E02A70165A000D5542 /* InspectorView.swift */; };
+		647C01E32A70B4DC000D5542 /* ImageSlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01E22A70B4DC000D5542 /* ImageSlideView.swift */; };
+		647C01E52A70B668000D5542 /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647C01E42A70B668000D5542 /* UIImage+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,7 +88,7 @@
 		641290FA2A6775D0002AB740 /* ControlTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlTitleLabel.swift; sourceTree = "<group>"; };
 		641290FC2A677D29002AB740 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		641290FE2A678088002AB740 /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
-		641291002A67A4F1002AB740 /* SquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareView.swift; sourceTree = "<group>"; };
+		641291002A67A4F1002AB740 /* SquareSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareSlideView.swift; sourceTree = "<group>"; };
 		641291022A67BA21002AB740 /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		641291122A68C299002AB740 /* SlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideView.swift; sourceTree = "<group>"; };
 		641291142A68D65D002AB740 /* CALayer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+.swift"; sourceTree = "<group>"; };
@@ -99,6 +101,8 @@
 		6412913E2A6E3B15002AB740 /* MockSlideManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSlideManager.swift; sourceTree = "<group>"; };
 		647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideListCell.swift; sourceTree = "<group>"; };
 		647C01E02A70165A000D5542 /* InspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorView.swift; sourceTree = "<group>"; };
+		647C01E22A70B4DC000D5542 /* ImageSlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSlideView.swift; sourceTree = "<group>"; };
+		647C01E42A70B668000D5542 /* UIImage+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +251,7 @@
 		641290EC2A64E0D6002AB740 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				647C01E42A70B668000D5542 /* UIImage+.swift */,
 				641291022A67BA21002AB740 /* UIColor+.swift */,
 				641291142A68D65D002AB740 /* CALayer+.swift */,
 				6412911C2A6E0919002AB740 /* NotificiationName+.swift */,
@@ -261,7 +266,8 @@
 				641290FC2A677D29002AB740 /* PaddingLabel.swift */,
 				641290FE2A678088002AB740 /* ColorView.swift */,
 				641291122A68C299002AB740 /* SlideView.swift */,
-				641291002A67A4F1002AB740 /* SquareView.swift */,
+				641291002A67A4F1002AB740 /* SquareSlideView.swift */,
+				647C01E22A70B4DC000D5542 /* ImageSlideView.swift */,
 				647C01DA2A6E6E7A000D5542 /* SlideListCell.swift */,
 				647C01E02A70165A000D5542 /* InspectorView.swift */,
 			);
@@ -426,7 +432,7 @@
 				641290FF2A678088002AB740 /* ColorView.swift in Sources */,
 				641290DD2A64D698002AB740 /* SquareSlide.swift in Sources */,
 				6412912E2A6E2075002AB740 /* SlideAlpha.swift in Sources */,
-				641291012A67A4F1002AB740 /* SquareView.swift in Sources */,
+				641291012A67A4F1002AB740 /* SquareSlideView.swift in Sources */,
 				641290F42A652C13002AB740 /* RandomValueCreator.swift in Sources */,
 				641290AD2A64D1EC002AB740 /* ViewController.swift in Sources */,
 				641291152A68D65D002AB740 /* CALayer+.swift in Sources */,
@@ -435,6 +441,7 @@
 				641290E32A64DAFF002AB740 /* Factory.swift in Sources */,
 				647C01E12A70165A000D5542 /* InspectorView.swift in Sources */,
 				641290A92A64D1EC002AB740 /* AppDelegate.swift in Sources */,
+				647C01E32A70B4DC000D5542 /* ImageSlideView.swift in Sources */,
 				641291172A68DC9E002AB740 /* DefaultSlideManager.swift in Sources */,
 				641290DF2A64D730002AB740 /* SlideColor.swift in Sources */,
 				641291132A68C299002AB740 /* SlideView.swift in Sources */,
@@ -443,6 +450,7 @@
 				641290EB2A64E048002AB740 /* ImageSlide.swift in Sources */,
 				641290E62A64DB22002AB740 /* Slide.swift in Sources */,
 				6412911D2A6E0919002AB740 /* NotificiationName+.swift in Sources */,
+				647C01E52A70B668000D5542 /* UIImage+.swift in Sources */,
 				641290FD2A677D29002AB740 /* PaddingLabel.swift in Sources */,
 				641291032A67BA21002AB740 /* UIColor+.swift in Sources */,
 			);
