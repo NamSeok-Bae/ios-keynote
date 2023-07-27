@@ -81,7 +81,7 @@ class DefaultSlideManager: SlideManager {
     func updateSquareSlideBackgroundColor(color: SlideColor) {
         if let index = currentUseIndex,
            let slide = slideArray[index] as? SquareSlide {
-            slide.updateBackgroundColor(color: color)
+            slide.updateColor(color: color)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewBackgroundColorUpdate,
                 object: nil,

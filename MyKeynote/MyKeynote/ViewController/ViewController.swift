@@ -87,14 +87,14 @@ class ViewController: UIViewController {
         slideManager.updateCurrentUseIndex(index: index)
         
         if let square = slideManager[index] as? SquareSlide {
-            setupInspectOfBackgroundColor(color: square.backgroundColor)
+            setupInspectOfBackgroundColor(color: square.color)
             setupInspectOfAlpha(alpha: square.alpha)
             
             let squareView = SquareSlideView(data: square)
             squareView.isTapped = false
             squareView.delegate = self
             containerView.addSubview(squareView)
-            configureSlideView(size: CGSize(width: square.sideLength, height: square.sideLength), view: squareView)
+            configureSlideView(size: square.size, view: squareView)
             currentView = squareView
         } else if let image = slideManager[index] as? ImageSlide {
             setupInspectOfBackgroundColor(color: uiColorToSlideColor(.systemGray5))
@@ -150,11 +150,11 @@ class ViewController: UIViewController {
     
     private func setupInspectOfBackgroundColor(color: SlideColor) {
         currentBackgroundColor = color
-        inspertorView.bindBackgroundButton(color: color)
+        inspertorView.updateBackgroundButton(color: color)
     }
     
     private func setupInspectOfAlpha(alpha: SlideAlpha) {
-        inspertorView.bindAlphaStepperAndLabel(alpha: alpha)
+        inspertorView.updateAlphaStepperAndLabel(alpha: alpha)
     }
     
     private func removeAllConstraint(view: UIView) {
@@ -353,7 +353,7 @@ class ViewController: UIViewController {
 // MARK: - Slide Delegate
 extension ViewController: SlideDelegate {
     func detectTappedSlide(isTapped: Bool) {
-        inspertorView.bindTapped(isTapped: isTapped, curretViewType: type(of: currentView))
+        inspertorView.updateTapped(isTapped: isTapped, curretViewType: type(of: currentView))
     }
     
     func presentImagePicker() {

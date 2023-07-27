@@ -188,13 +188,13 @@ final class InspectorView: UIView {
         alphaStepper.isEnabled = false
     }
     
-    func bindTapped(isTapped: Bool, curretViewType: SlideView.Type) {
+    func updateTapped(isTapped: Bool, curretViewType: SlideView.Type) {
         backgroundControlButton.isEnabled = curretViewType == SquareSlideView.self ? isTapped : false
         alphaNumberLabel.isEnabled = isTapped
         alphaStepper.isEnabled = isTapped
     }
     
-    func bindBackgroundButton(color: SlideColor) {
+    func updateBackgroundButton(color: SlideColor) {
         let uiColor = UIColor(color: color)
         backgroundControlButton.setTitle(
             color.convertHexString(),
@@ -207,7 +207,7 @@ final class InspectorView: UIView {
         backgroundControlButton.layer.backgroundColor = uiColor.cgColor
     }
     
-    func bindAlphaStepperAndLabel(alpha: SlideAlpha) {
+    func updateAlphaStepperAndLabel(alpha: SlideAlpha) {
         alphaNumberLabel.text = "\(alpha.value)"
         alphaStepper.value = Double(alpha.value)
     }

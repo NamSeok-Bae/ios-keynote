@@ -14,7 +14,7 @@ class SquareSlideView: SlideView {
     
     convenience init(data: SquareSlide) {
         self.init(frame: .zero)
-        self.bindData(data: data)
+        self.setupProperties(data: data)
     }
     
     override init(frame: CGRect) {
@@ -35,8 +35,8 @@ class SquareSlideView: SlideView {
         self.layer.setBackgroundColorWithAlpha(color: color, alpha: alpha)
     }
     
-    func bindData(data: SquareSlide) {
-        super.bindData(data: data)
-        configureUI(color: data.backgroundColor)
+    func setupProperties(data: SquareSlide) {
+        super.setupProperties(data: data)
+        configureUI(color: data.color)
     }
 }

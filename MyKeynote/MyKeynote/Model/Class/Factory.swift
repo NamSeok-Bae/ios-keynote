@@ -19,7 +19,7 @@ class SquareSlideFactory: SlideCreator {
         return SquareSlide(identifier: createRandomIdentifier(),
                            alpha: createRandomInt(range: 0...10),
                            sideLength: createRandomInt(range: 100...500),
-                           backgroundColor: createRandomColor())
+                           color: createRandomColor())
     }
 }
 

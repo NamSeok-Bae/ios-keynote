@@ -64,7 +64,7 @@ class SlideView: UIView {
         self.alpha = CGFloat(alpha.value) / 10
     }
     
-    func bindData(data: Slide) {
+    func setupProperties(data: Slide) {
         setupProperties(identifier: data.identifier,
                         alpha: data.alpha)
     }

@@ -27,7 +27,7 @@ class ImageSlideView: SlideView {
     
     convenience init(data: ImageSlide) {
         self.init(frame: .zero)
-        self.configure(data: data)
+        self.setupProperties(data: data)
     }
     
     override init(frame: CGRect) {
@@ -68,12 +68,12 @@ class ImageSlideView: SlideView {
         delegate?.presentImagePicker()
     }
     
-    func configure(data: ImageSlide) {
-        super.bindData(data: data)
+    func setupProperties(data: ImageSlide) {
+        super.setupProperties(data: data)
         setupViews()
         configureUI()
         
-        if let url = data.imageURL {
+        if let url = data.url {
             setImage(imageURL: url, size: data.size)
         }
     }
