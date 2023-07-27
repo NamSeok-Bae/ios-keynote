@@ -7,19 +7,10 @@
 
 import Foundation
 
-class ImageSlide: Slide, Equatable {
-    static func == (lhs: ImageSlide, rhs: ImageSlide) -> Bool {
-        return lhs.description == rhs.description
-    }
-    
-    private(set) var size: CGSize = CGSize(width: 100, height: 100)
-    private(set) var imageURL: URL!
+class ImageSlide: Slide, ImageURLable {
+    private(set) var url: URL!
     
     func updateImageURL(url: URL) {
-        imageURL = url
-    }
-    
-    func updateSize(size: CGSize) {
-        self.size = size
+        self.url = url
     }
 }

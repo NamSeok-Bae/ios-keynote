@@ -7,24 +7,15 @@
 
 import Foundation
 
-class SquareSlide: Slide, Equatable {
-    static func == (lhs: SquareSlide, rhs: SquareSlide) -> Bool {
-        return lhs.description == rhs.description
+class SquareSlide: Slide, Colorable {
+    private(set) var color: SlideColor
+    
+    init(identifier: String, alpha: Int, sideLength: Int, color: SlideColor) {
+        self.color = color
+        super.init(identifier: identifier, alpha: alpha, size: CGSize(width: sideLength, height: sideLength))
     }
     
-    let sideLength: Int
-    private(set) var backgroundColor: SlideColor
-    override var description: String {
-        return "(\(identifier)), Side: \(sideLength), " + backgroundColor.description + ", Alpah: \(alpha)"
-    }
-    
-    init(identifier: String, alpha: Int, sideLength: Int, backgroundColor: SlideColor) {
-        self.sideLength = sideLength
-        self.backgroundColor = backgroundColor
-        super.init(identifier: identifier, alpha: alpha)
-    }
-    
-    func updateBackgroundColor(color: SlideColor) {
-        self.backgroundColor = color
+    func updateColor(color: SlideColor) {
+        self.color = color
     }
 }
