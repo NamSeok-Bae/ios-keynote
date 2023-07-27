@@ -7,7 +7,11 @@
 
 import Foundation
 
-class SlideIdentifier {
+class SlideIdentifier: Equatable {
+    static func == (lhs: SlideIdentifier, rhs: SlideIdentifier) -> Bool {
+        lhs.value == rhs.value
+    }
+    
     let value: String
     
     init(identifier: String) {
