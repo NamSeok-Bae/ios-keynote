@@ -27,7 +27,7 @@ class ImageSlideView: SlideView {
     
     convenience init(data: ImageSlide) {
         self.init(frame: .zero)
-        self.bindData(data: data)
+        self.configure(data: data)
     }
     
     override init(frame: CGRect) {
@@ -68,22 +68,24 @@ class ImageSlideView: SlideView {
         delegate?.presentImagePicker()
     }
     
-    func bindData(data: ImageSlide) {
+    func configure(data: ImageSlide) {
         super.bindData(data: data)
         setupViews()
         configureUI()
-        bindImageString(imageString: data.imageString, size: data.size)
+        
+        if let url = data.imageURL {
+            setImage(imageURL: url, size: data.size)
+        }
     }
     
-    func bindImage(image: UIImage) {
+    func setImage(image: UIImage) {
         imageButton.setImage(image, for: .normal)
     }
     
-    func bindImageString(imageString: String, size: CGSize) {
-        if let data = Data(base64Encoded: imageString, options: .ignoreUnknownCharacters),
-           let image = UIImage(data: data) {
+    func setImage(imageURL: URL, size: CGSize) {
+        if let image = UIImage(url: imageURL) {
             let newImage = image.resize(standardSize: size)
-            bindImage(image: newImage)
+            setImage(image: newImage)
         }
     }
 }

@@ -130,8 +130,8 @@ class ViewController: UIViewController {
         )
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(didUpdateSlideImageString(_:)),
-            name: NSNotification.Name.slideViewImageStringUpdate,
+            selector: #selector(didUpdateSlideImageURL(_:)),
+            name: NSNotification.Name.slideViewImageURLUpdate,
             object: nil
         )
         NotificationCenter.default.addObserver(
@@ -174,7 +174,6 @@ class ViewController: UIViewController {
         removeAllSubViews(view: containerView)
         setupInspectDefault()
     }
-    
     
     // MARK: - Configure Functions
     
@@ -322,14 +321,13 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func didUpdateSlideImageString(_ notification: Notification) {
-        if let imageString = notification.userInfo?["SlideImageString"] as? String,
+    @objc func didUpdateSlideImageURL(_ notification: Notification) {
+        if let imageURL = notification.userInfo?["SlideImageURL"] as? URL,
            let imageView = currentView as? ImageSlideView,
-           let data = Data(base64Encoded: imageString, options: .ignoreUnknownCharacters),
-           let image = UIImage(data: data)  {
+           let image = UIImage(url: imageURL) {
             let newImage = image.resize(standardSize: containerView.frame.size)
             slideManager.updateImageSlideSize(size: newImage.size)
-            imageView.bindImage(image: newImage)
+            imageView.setImage(image: newImage)
         }
     }
     
@@ -380,8 +378,9 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: false) { [weak self] () in
             guard let self,
-                  let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
-            self.slideManager.updateImageSlideImageString(data: image.pngData())
+                  let url = info[UIImagePickerController.InfoKey.imageURL] as? URL else { return }
+            self.slideManager.updateImageSlideImageURL(url: url)
+            
         }
     }
 }

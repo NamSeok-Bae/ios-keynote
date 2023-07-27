@@ -15,6 +15,14 @@ extension UIImage {
         self.init(systemName: slide is SquareSlide ? "rectangle.center.inset.filled" : "photo")!
     }
     
+    convenience init?(url: URL) {
+        if let data = try? Data(contentsOf: url) {
+            self.init(data: data)
+            return
+        }
+        return nil
+    }
+    
     func resize(standardSize: CGSize) -> UIImage {
         let scaleByWidth = standardSize.width / self.size.width
         let scaleByHeight = standardSize.height / self.size.height

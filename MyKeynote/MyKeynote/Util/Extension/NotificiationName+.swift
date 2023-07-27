@@ -12,6 +12,6 @@ extension Notification.Name {
     static let slideViewAlphaUpdate = Notification.Name("SlideViewAlphaUpdateNotification")
     static let slideViewBackgroundColorUpdate = Notification.Name("SlideViewBackgroundColorUpdateNotification")
     static let slideViewMove = Notification.Name("SlideViewMoveNotification")
-    static let slideViewImageStringUpdate = Notification.Name("SlideViewImageStringUpdateNotification")
+    static let slideViewImageURLUpdate = Notification.Name("SlideViewImageURLUpdateNotification")
     static let slideViewSizeUpdate = Notification.Name("SlideViewSizeUpdateNotification")
 }

@@ -13,7 +13,7 @@ protocol SlideManager {
     func createRamdomSlide()
     func updateCurrentUseIndex(index: Int)
     func updateSlideAlpha(alpha: SlideAlpha)
-    func updateImageSlideImageString(data: Data?)
+    func updateImageSlideImageURL(url: URL)
     func updateImageSlideSize(size: CGSize)
     func moveSlide(sourceIndex: Int, destinationIndex: Int)
     func searchSlideByIdentifier(identifier: String)
@@ -90,14 +90,14 @@ class DefaultSlideManager: SlideManager {
         }
     }
     
-    func updateImageSlideImageString(data: Data?) {
+    func updateImageSlideImageURL(url: URL) {
         if let index = currentUseIndex,
            let slide = slideArray[index] as? ImageSlide {
-            slide.updateImageString(data: data)
+            slide.updateImageURL(url: url)
             NotificationCenter.default.post(
-                name: NSNotification.Name.slideViewImageStringUpdate,
+                name: NSNotification.Name.slideViewImageURLUpdate,
                 object: nil,
-                userInfo: ["SlideImageString": slide.imageString]
+                userInfo: ["SlideImageURL": url]
             )
         }
     }

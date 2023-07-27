@@ -13,13 +13,10 @@ class ImageSlide: Slide, Equatable {
     }
     
     private(set) var size: CGSize = CGSize(width: 100, height: 100)
-    private(set) var imageString: String = ""
+    private(set) var imageURL: URL!
     
-    func updateImageString(data: Data?) {
-        if let data {
-            let base64 = data.base64EncodedString()
-            imageString = base64
-        }
+    func updateImageURL(url: URL) {
+        imageURL = url
     }
     
     func updateSize(size: CGSize) {
