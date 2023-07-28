@@ -9,11 +9,7 @@ import UIKit
 
 extension UIImage {
     static let rectangle = UIImage(systemName: "rectangle.center.inset.filled")
-    static let image = UIImage(systemName: "photo")
-    
-    convenience init(slide: Slide) {
-        self.init(systemName: slide is SquareSlide ? "rectangle.center.inset.filled" : "photo")!
-    }
+    static let photo = UIImage(systemName: "photo")
     
     convenience init?(url: URL) {
         if let data = try? Data(contentsOf: url) {
