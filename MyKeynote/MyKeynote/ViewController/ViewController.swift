@@ -433,7 +433,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.addInteraction(UIContextMenuInteraction(delegate: self))
         
         if let slide = slideManager[indexPath.row] {
-            cell.bind(slide: slide, index: indexPath.row)
+            cell.configure(slide: slide, index: indexPath.row)
+            cell.updateIdentifier(identifier: slide.identifier)
+            cell.updateIndex(index: indexPath.row)
+            
+            if let imageSlide = slide as? ImageURLable {
+                cell.updatePhotoImage()
+            } else {
+                cell.updateRectanglrImage()
+            }
         }
         
         return cell
@@ -467,8 +475,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
               let destCell = tableView.cellForRow(at: destinationIndexPath) as? SlideListCell else {
             return
         }
-        srcCell.bind(index: destinationIndexPath.row)
-        destCell.bind(index: sourceIndexPath.row)
+        srcCell.updateIndex(index: destinationIndexPath.row)
+        destCell.updateIndex(index: sourceIndexPath.row)
         slideManager.moveSlide(sourceIndex: sourceIndexPath.row, destinationIndex: destinationIndexPath.row)
     }
 }
