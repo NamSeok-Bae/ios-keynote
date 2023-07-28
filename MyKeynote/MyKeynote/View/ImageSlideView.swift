@@ -12,7 +12,7 @@ class ImageSlideView: SlideView {
     lazy var imageButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage.image?.withTintColor(.gray, renderingMode: .alwaysOriginal), for: .normal)
+        button.setImage(UIImage.photo?.withTintColor(.gray, renderingMode: .alwaysOriginal), for: .normal)
         button.layer.cornerRadius = 5
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(doubleTappedImageButton))

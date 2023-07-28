@@ -62,15 +62,34 @@ final class SlideListCell: UITableViewCell {
         }
     }
     
-    // MARK: - Functions
-    func bind(slide: Slide, index: Int) {
-        identifier = slide.identifier.value
-        preview.image = UIImage(slide: slide).withTintColor(.gray,
-                                                            renderingMode: .alwaysOriginal)
-        bind(index: index)
+    override func prepareForReuse() {
+        isDisplayed = false
+        identifier = ""
+        numberLabel.text = ""
+        preview.image = nil
     }
     
-    func bind(index: Int) {
+    // MARK: - Functions
+    func configure(slide: Slide, index: Int) {
+        identifier = slide.identifier.value
+        updateIndex(index: index)
+    }
+    
+    func updateIdentifier(identifier: SlideIdentifier) {
+        self.identifier = identifier.value
+    }
+    
+    func updatePhotoImage() {
+        preview.image = UIImage.photo?.withTintColor(.gray,
+                                                    renderingMode: .alwaysOriginal)
+    }
+    
+    func updateRectanglrImage() {
+        preview.image = UIImage.rectangle?.withTintColor(.gray,
+                                                      renderingMode: .alwaysOriginal)
+    }
+    
+    func updateIndex(index: Int) {
         numberLabel.text = "\(index + 1)"
     }
     
