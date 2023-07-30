@@ -16,6 +16,14 @@ extension UIColor {
         return ciColor.alpha
     }
     
+    var slideColor: SlideColor {
+        let ciColor = ciColor
+        let red: Int = Int(ciColor.red * 255)
+        let green: Int = Int(ciColor.green * 255)
+        let blue: Int = Int(ciColor.blue * 255)
+        return SlideColor(red: red, green: green, blue: blue)
+    }
+    
     var complementaryColor: UIColor {
         let red: CGFloat = 1.0 - ciColor.red
         let green: CGFloat = 1.0 - ciColor.green
