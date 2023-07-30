@@ -12,6 +12,11 @@ extension CALayer {
         return self.backgroundColor?.alpha ?? 1
     }
     
+    func setAlpha(alpha: SlideAlpha) {
+        guard let color = backgroundColor else { return }
+        backgroundColor = UIColor(cgColor: color).withAlphaComponent(alpha.cgValue).cgColor
+    }
+    
     func setBackgroundColor(color: SlideColor) {
         backgroundColor = UIColor(color: color).withAlphaComponent(backgroundColorAlpha).cgColor
     }
