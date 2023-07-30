@@ -512,7 +512,7 @@ extension ViewController: UITableViewDragDelegate, UITableViewDropDelegate {
 extension ViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         guard let cell = interaction.view as? SlideListCell else { return nil }
-        slideManager.searchSlideByIdentifier(identifier: cell.identifier)
+        slideManager.updateCurrentUseIndexByIdentifier(identifier: cell.identifier)
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_: [UIMenuElement]) -> UIMenu? in
             guard let self else { return UIMenu() }

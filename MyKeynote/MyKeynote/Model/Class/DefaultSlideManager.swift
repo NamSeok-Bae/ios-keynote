@@ -16,7 +16,7 @@ protocol SlideManager {
     func updateImageSlideImageURL(url: URL)
     func updateImageSlideSize(size: CGSize)
     func moveSlide(sourceIndex: Int, destinationIndex: Int)
-    func searchSlideByIdentifier(identifier: String)
+    func updateCurrentUseIndexByIdentifier(identifier: String)
 }
 
 class DefaultSlideManager: SlideManager {
@@ -144,7 +144,7 @@ class DefaultSlideManager: SlideManager {
         }
     }
     
-    func searchSlideByIdentifier(identifier: String) {
+    func updateCurrentUseIndexByIdentifier(identifier: String) {
         for (idx, slide) in slideArray.enumerated() {
             if slide.identifier.value == identifier {
                 currentUseIndex = idx
