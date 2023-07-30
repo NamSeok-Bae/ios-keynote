@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImageSlideView: SlideView {
+class ImageSlideView: SlideView, SlideViewAlphable, SlideViewImageable {
     // MARK: - Properties
     lazy var imageButton: UIButton = {
         let button = UIButton()
@@ -25,17 +25,19 @@ class ImageSlideView: SlideView {
     
     // MARK: - LifeCycles
     
-    convenience init(data: ImageSlide) {
-        self.init(frame: .zero)
-        self.setupProperties(data: data)
+    override init(identifier: SlideIdentifier) {
+        super.init(identifier: identifier)
+        setupViews()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupViews()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupViews()
     }
     
     // MARK: - Functions
@@ -55,8 +57,14 @@ class ImageSlideView: SlideView {
         ])
     }
     
-    override func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
+    func updateAlpha(alpha: SlideAlpha) {
         self.imageButton.imageView?.alpha = alpha.cgValue
+    }
+    
+    func updateImage(imageURL: URL?) {
+        if let url = imageURL {
+            self.imageButton.setImage(UIImage(url: url), for: .normal)
+        }
     }
     
     @objc private func touchUpImageButton(sender: UIButton) {
@@ -68,24 +76,7 @@ class ImageSlideView: SlideView {
         delegate?.presentImagePicker()
     }
     
-    func setupProperties(data: ImageSlide) {
-        super.setupProperties(data: data)
-        setupViews()
-        configureUI()
-        
-        if let url = data.url {
-            setImage(imageURL: url, size: data.size)
-        }
-    }
-    
     func setImage(image: UIImage) {
         imageButton.setImage(image, for: .normal)
-    }
-    
-    func setImage(imageURL: URL, size: CGSize) {
-        if let image = UIImage(url: imageURL) {
-            let newImage = image.resize(standardSize: size)
-            setImage(image: newImage)
-        }
     }
 }

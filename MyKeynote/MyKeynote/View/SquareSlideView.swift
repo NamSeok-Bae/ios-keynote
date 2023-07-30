@@ -7,14 +7,13 @@
 
 import UIKit
 
-class SquareSlideView: SlideView {
+class SquareSlideView: SlideView, SlideViewBackgroundColorable, SlideViewAlphable {
     // MARK: - Properties
     
     // MARK: - LifeCycles
     
-    convenience init(data: SquareSlide) {
-        self.init(frame: .zero)
-        self.setupProperties(data: data)
+    override init(identifier: SlideIdentifier) {
+        super.init(identifier: identifier)
     }
     
     override init(frame: CGRect) {
@@ -26,17 +25,11 @@ class SquareSlideView: SlideView {
     }
     
     // MARK: - Functions
-    private func configureUI(color: SlideColor) {
-        self.layer.backgroundColor = UIColor(color: color).withAlphaComponent(alpha).cgColor
-        self.alpha = 1
+    func updateBackgroundColor(color: SlideColor) {
+        self.layer.setBackgroundColor(color: color)
     }
     
-    override func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
-        self.layer.setBackgroundColorWithAlpha(color: color, alpha: alpha)
-    }
-    
-    func setupProperties(data: SquareSlide) {
-        super.setupProperties(data: data)
-        configureUI(color: data.color)
+    func updateAlpha(alpha: SlideAlpha) {
+        self.layer.setAlpha(alpha: alpha)
     }
 }

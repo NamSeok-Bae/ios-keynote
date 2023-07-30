@@ -12,8 +12,24 @@ protocol SlideDelegate: AnyObject {
     func presentImagePicker()
 }
 
-class SlideView: UIView {
+protocol SlideViewColorable {
+    func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha)
+}
 
+protocol SlideViewBackgroundColorable {
+    func updateBackgroundColor(color: SlideColor)
+}
+
+protocol SlideViewAlphable {
+    func updateAlpha(alpha: SlideAlpha)
+}
+
+protocol SlideViewImageable {
+    func updateImage(imageURL: URL?)
+}
+
+class SlideView: UIView {
+    
     // MARK: - Properties
     
     var isTapped: Bool = false {
@@ -23,15 +39,14 @@ class SlideView: UIView {
         }
     }
     
-    private var identifier: SlideIdentifier!
+    private(set)var identifier: SlideIdentifier!
     weak var delegate: SlideDelegate?
     
     // MARK: - LifeCycles
-    
-    init(identifier: SlideIdentifier, alpha: SlideAlpha) {
+    init(identifier: SlideIdentifier) {
         super.init(frame: .zero)
         configureUI()
-        setupProperties(identifier: identifier, alpha: alpha)
+        updateIdentifier(identifier: identifier)
     }
     
     override init(frame: CGRect) {
@@ -51,21 +66,11 @@ class SlideView: UIView {
     
     // MARK: - Functions
     func configureUI() {
-        self.layer.backgroundColor = UIColor.systemGray5.cgColor
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.layer.backgroundColor = UIColor.systemGray5.cgColor
     }
     
-    func setBackgroundColorWithAlpha(color: SlideColor, alpha: SlideAlpha) {
-        
-    }
-    
-    func setupProperties(identifier: SlideIdentifier, alpha: SlideAlpha) {
+    func updateIdentifier(identifier: SlideIdentifier) {
         self.identifier = identifier
-        self.alpha = CGFloat(alpha.value) / 10
-    }
-    
-    func setupProperties(data: Slide) {
-        setupProperties(identifier: data.identifier,
-                        alpha: data.alpha)
     }
 }
