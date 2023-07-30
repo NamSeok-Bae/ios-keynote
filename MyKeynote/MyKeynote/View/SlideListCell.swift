@@ -70,27 +70,30 @@ final class SlideListCell: UITableViewCell {
     }
     
     // MARK: - Functions
-    func configure(slide: Slide, index: Int) {
-        identifier = slide.identifier.value
-        updateIndex(index: index)
-    }
-    
     func updateIdentifier(identifier: SlideIdentifier) {
         self.identifier = identifier.value
     }
     
-    func updatePhotoImage() {
+    func updateIndex(index: Int) {
+        numberLabel.text = "\(index + 1)"
+    }
+    
+    func updateImage(slide: Slide) {
+        if slide is ImageURLable {
+            updatePhotoImage()
+        } else {
+            updateRectanglrImage()
+        }
+    }
+    
+    private func updatePhotoImage() {
         preview.image = UIImage.photo?.withTintColor(.gray,
                                                     renderingMode: .alwaysOriginal)
     }
     
-    func updateRectanglrImage() {
+    private func updateRectanglrImage() {
         preview.image = UIImage.rectangle?.withTintColor(.gray,
                                                       renderingMode: .alwaysOriginal)
-    }
-    
-    func updateIndex(index: Int) {
-        numberLabel.text = "\(index + 1)"
     }
     
     private func setupViews() {
