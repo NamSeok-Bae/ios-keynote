@@ -7,9 +7,9 @@
 
 import Foundation
 
-protocol Idenfierable {
+protocol Identifierable {
     var identifier: SlideIdentifier { get }
-    func updateIdentifier(identifier: String)
+    func updateIdentifier(identifier: SlideIdentifier)
 }
 
 protocol Colorable {
@@ -28,11 +28,11 @@ protocol Sizeable {
 }
 
 protocol ImageURLable {
-    var url: URL! { get }
+    var url: URL? { get }
     func updateImageURL(url: URL)
 }
 
-class Slide: Idenfierable, Alphable, Sizeable {
+class Slide: Identifierable, Alphable, Sizeable {
     private(set) var identifier: SlideIdentifier
     private(set) var alpha: SlideAlpha
     private(set) var size: CGSize
@@ -55,8 +55,8 @@ class Slide: Idenfierable, Alphable, Sizeable {
         self.size = size
     }
     
-    func updateIdentifier(identifier: String) {
-        self.identifier = SlideIdentifier(identifier: identifier)
+    func updateIdentifier(identifier: SlideIdentifier) {
+        self.identifier = identifier
     }
     
     func updateAlpha(alpha: SlideAlpha) {
