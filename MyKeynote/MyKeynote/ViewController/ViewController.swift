@@ -86,27 +86,15 @@ class ViewController: UIViewController {
     private func setupSlideView(index: Int) {
         slideManager.updateCurrentUseIndex(index: index)
         
-        if let square = slideManager[index] as? SquareSlide {
-            setupInspectOfBackgroundColor(color: square.color)
-            setupInspectOfAlpha(alpha: square.alpha)
-            
-            let squareView = SquareSlideView(data: square)
-            squareView.isTapped = false
-            squareView.delegate = self
-            containerView.addSubview(squareView)
-            configureSlideView(size: square.size, view: squareView)
-            currentView = squareView
-        } else if let image = slideManager[index] as? ImageSlide {
-            setupInspectOfBackgroundColor(color: uiColorToSlideColor(.systemGray5))
-            setupInspectOfAlpha(alpha: image.alpha)
-            
-            let imageView = ImageSlideView(data: image)
-            imageView.isTapped = false
-            imageView.delegate = self
-            containerView.addSubview(imageView)
-            configureSlideView(size: image.size, view: imageView)
-            currentView = imageView
-        }
+        guard let slide = slideManager[index],
+              let newView = createSlideView(slide: slide) else { return }
+        setupInspectOfAlpha(alpha: slide.alpha)
+        
+        newView.isTapped = false
+        newView.delegate = self
+        containerView.addSubview(newView)
+        configureSlideView(size: slide.size, view: newView)
+        currentView = newView
     }
     
     private func setupNotificationCenter() {
@@ -155,6 +143,34 @@ class ViewController: UIViewController {
     
     private func setupInspectOfAlpha(alpha: SlideAlpha) {
         inspertorView.updateAlphaStepperAndLabel(alpha: alpha)
+    }
+    
+    private func createSlideView(slide: Slide) -> SlideView? {
+        if let square = slide as? Slide & Colorable {
+            return createSquareView(slide: square)
+        }
+        
+        if let image = slide as? Slide & ImageURLable {
+            return createImageView(slide: image)
+        }
+        
+        return nil
+    }
+    
+    private func createSquareView(slide: Slide & Colorable) -> SquareSlideView {
+        let newView = SquareSlideView(identifier: slide.identifier)
+        newView.updateAlpha(alpha: slide.alpha)
+        newView.updateBackgroundColor(color: slide.color)
+        setupInspectOfBackgroundColor(color: slide.color)
+        return newView
+    }
+    
+    private func createImageView(slide: Slide & ImageURLable) -> ImageSlideView {
+        let newView = ImageSlideView(identifier: slide.identifier)
+        newView.updateAlpha(alpha: slide.alpha)
+        newView.updateImage(imageURL: slide.url)
+        
+        return newView
     }
     
     private func removeAllConstraint(view: UIView) {
@@ -299,16 +315,18 @@ class ViewController: UIViewController {
     }
     
     @objc func didUpdateSlideViewAlpha(_ notification: Notification) {
-        if let alpha = notification.userInfo?["SlideAlpha"] as? SlideAlpha {
-            setupInspectOfAlpha(alpha: alpha)
-            currentView.setBackgroundColorWithAlpha(color: currentBackgroundColor, alpha: alpha)
+        if let slide = notification.userInfo?["SlideAlpha"] as? Slide,
+           let slideView = currentView as? SlideViewAlphable {
+            setupInspectOfAlpha(alpha: slide.alpha)
+            slideView.updateAlpha(alpha: slide.alpha)
         }
     }
     
     @objc func didUpdateSlideViewBackgroundColor(_ notification: Notification) {
-        if let color = notification.userInfo?["SlideColor"] as? SlideColor {
-            setupInspectOfBackgroundColor(color: color)
-            currentView.layer.setBackgroundColor(color: color)
+        if let slide = notification.userInfo?["SlideColor"] as? Slide & Colorable,
+           let slideView = currentView as? SlideViewBackgroundColorable {
+            setupInspectOfBackgroundColor(color: slide.color)
+            slideView.updateBackgroundColor(color: slide.color)
         }
     }
     
@@ -322,9 +340,10 @@ class ViewController: UIViewController {
     }
     
     @objc func didUpdateSlideImageURL(_ notification: Notification) {
-        if let imageURL = notification.userInfo?["SlideImageURL"] as? URL,
+        if let slide = notification.userInfo?["SlideImageURL"] as? Slide & ImageURLable,
            let imageView = currentView as? ImageSlideView,
-           let image = UIImage(url: imageURL) {
+           let url = slide.url,
+           let image = UIImage(url: url) {
             let newImage = image.resize(standardSize: containerView.frame.size)
             slideManager.updateImageSlideSize(size: newImage.size)
             imageView.setImage(image: newImage)
@@ -332,10 +351,9 @@ class ViewController: UIViewController {
     }
     
     @objc func didUpdateSlideSize(_ notification: Notification) {
-        if let size = notification.userInfo?["SlideSize"] as? CGSize,
-           let imageView = currentView as? ImageSlideView {
-            removeAllConstraint(view: imageView)
-            configureSlideView(size: size, view: imageView)
+        if let slide = notification.userInfo?["SlideSize"] as? Slide {
+            removeAllConstraint(view: currentView)
+            configureSlideView(size: slide.size, view: currentView)
         }
     }
     
@@ -403,7 +421,7 @@ extension ViewController: InspertorViewDelegate {
 // MARK: - UIColorPickerViewControllerDelegate
 extension ViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
-        let slideColor = uiColorToSlideColor(viewController.selectedColor)
+        let slideColor = viewController.selectedColor.slideColor
         let alpha = SlideAlpha(alpha: viewController.selectedColor.alpha)
         slideManager.updateSquareSlideBackgroundColor(color: slideColor)
         slideManager.updateSlideAlpha(alpha: alpha)
@@ -433,15 +451,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.addInteraction(UIContextMenuInteraction(delegate: self))
         
         if let slide = slideManager[indexPath.row] {
-            cell.configure(slide: slide, index: indexPath.row)
             cell.updateIdentifier(identifier: slide.identifier)
             cell.updateIndex(index: indexPath.row)
-            
-            if let imageSlide = slide as? ImageURLable {
-                cell.updatePhotoImage()
-            } else {
-                cell.updateRectanglrImage()
-            }
+            cell.updateImage(slide: slide)
         }
         
         return cell

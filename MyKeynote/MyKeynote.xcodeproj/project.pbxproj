@@ -229,6 +229,7 @@
 				641290DC2A64D698002AB740 /* SquareSlide.swift */,
 				641290EA2A64E048002AB740 /* ImageSlide.swift */,
 				641290E22A64DAFF002AB740 /* Factory.swift */,
+				641291162A68DC9E002AB740 /* DefaultSlideManager.swift */,
 			);
 			path = Class;
 			sourceTree = "<group>";
@@ -277,7 +278,6 @@
 		6412911B2A6D77CB002AB740 /* Struct */ = {
 			isa = PBXGroup;
 			children = (
-				641291162A68DC9E002AB740 /* DefaultSlideManager.swift */,
 			);
 			path = Struct;
 			sourceTree = "<group>";
