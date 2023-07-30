@@ -69,47 +69,48 @@ class DefaultSlideManager: SlideManager {
     
     func updateSlideAlpha(alpha: SlideAlpha) {
         if let index = currentUseIndex {
-            slideArray[index].updateAlpha(alpha: alpha)
+            let slide = slideArray[index]
+            slide.updateAlpha(alpha: alpha)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewAlphaUpdate,
                 object: nil,
-                userInfo: ["SlideAlpha": alpha]
+                userInfo: ["SlideAlpha": slide]
             )
         }
     }
     
     func updateSquareSlideBackgroundColor(color: SlideColor) {
         if let index = currentUseIndex,
-           let slide = slideArray[index] as? SquareSlide {
+           let slide = slideArray[index] as? Colorable {
             slide.updateColor(color: color)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewBackgroundColorUpdate,
                 object: nil,
-                userInfo: ["SlideColor": color]
+                userInfo: ["SlideColor": slide]
             )
         }
     }
     
     func updateImageSlideImageURL(url: URL) {
         if let index = currentUseIndex,
-           let slide = slideArray[index] as? ImageSlide {
+           let slide = slideArray[index] as? ImageURLable {
             slide.updateImageURL(url: url)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewImageURLUpdate,
                 object: nil,
-                userInfo: ["SlideImageURL": url]
+                userInfo: ["SlideImageURL": slide]
             )
         }
     }
     
     func updateImageSlideSize(size: CGSize) {
-        if let index = currentUseIndex,
-           let slide = slideArray[index] as? ImageSlide {
+        if let index = currentUseIndex {
+            let slide = slideArray[index]
             slide.updateSize(size: size)
             NotificationCenter.default.post(
                 name: NSNotification.Name.slideViewSizeUpdate,
                 object: nil,
-                userInfo: ["SlideSize": slide.size]
+                userInfo: ["SlideSize": slide]
             )
         }
     }
